@@ -69,7 +69,8 @@ capabilities:
     available: unproven
 
 # ── Gate verdicts ────────────────────────────────────────────────────────
-gates: []
+gates:
+  - {gate: ai-harnessed, verdict: OPEN, date: 2026-10-23, commit: 034f086, checker: fresh, round: 1}
 
 # ── Tests ────────────────────────────────────────────────────────────────
 # JRN-01 is the standard run (workflow shape: ordered, one test per step).
