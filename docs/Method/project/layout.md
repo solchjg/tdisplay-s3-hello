@@ -20,7 +20,16 @@
   invert_color(true), swap_xy(true), mirror(false, true), RGB element order, and
   RGB565 pixels byte-swapped (MSB first) in the draw buffer for the 8-bit bus.
   FSD FR-6.1, FR-6.3 and FR-6.4 are the requirements; operator checks decide.
-- Text uses a 16 × 32 fixed-width bitmap font (ASCII 0x20 – 0x7E only). Line 1 at
+- The INIT_DONE guard (FSD T1/T2) is the result of `lcd_start()`: bring-up,
+  clear to black, and the first draw of both lines. The backlight is turned on
+  by T1's action, so a failed start never lights a half-drawn panel.
+- Each draw waits for the DMA-done callback (100 ms bound) before the line
+  buffer is refilled; a missed callback is `ESP_ERR_TIMEOUT`, i.e. a write
+  failure for FSD T4.
+- Text uses a 16 × 32 fixed-width bitmap font (ASCII 0x20 – 0x7E only):
+  Terminus Font Bold 16x32 (SIL OFL 1.1, `components/lcd/font/OFL.txt`),
+  converted by `tools/bdf_to_c.py` into `components/lcd/font16x32.c`.
+  Regenerate, never hand-edit. Line 1 at
   y = 40, line 2 at y = 96, both at x = 16 (recommendation; FR-6.5 is the
   requirement). Line 2 is redrawn by drawing its full 288 px-wide row cell, so
   stale digits are overwritten (FR-5.3).

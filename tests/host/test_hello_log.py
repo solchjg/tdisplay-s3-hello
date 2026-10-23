@@ -17,7 +17,11 @@ HARNESS = r"""
 int main(int argc, char **argv)
 {
     char buf[HELLO_LOG_LINE_MAX];
-    hello_log_format_up(buf, sizeof buf, (uint32_t)strtoul(argv[1], NULL, 10));
+    if (argv[1][0] == 's') {
+        hello_log_format_shown(buf, sizeof buf, argv[1] + 1);
+    } else {
+        hello_log_format_up(buf, sizeof buf, (uint32_t)strtoul(argv[1], NULL, 10));
+    }
     fputs(buf, stdout);
     return 0;
 }
@@ -43,3 +47,8 @@ def fmt(tmp_path_factory):
 @pytest.mark.parametrize("n, text", [(0, "up=0"), (4294967295, "up=4294967295")])
 def test_up_line_format(fmt, n, text):
     assert fmt(n) == text
+
+
+# TC-LOG-05 · FR-7.1 (core)
+def test_shown_line_format(fmt):
+    assert fmt("sHello, world!") == 'shown line1="Hello, world!"'

@@ -1,7 +1,6 @@
 """JRN-01 — the standard run, one test per step, in order (testing/test-plan.yaml).
 
-Steps 3, 4 and 6 need FSD Phase 2 firmware and are expected to fail until it
-lands; their XPASS is the landing signal.
+Steps 3, 4 and 6 need FSD Phase 2 firmware (the display).
 """
 
 import re
@@ -13,7 +12,6 @@ from conftest import hello_lines, up_values
 pytestmark = pytest.mark.journey
 
 MARKER = "Init complete, running event-driven"
-PHASE2 = pytest.mark.xfail(strict=True, reason="FSD Phase 2 (display) not implemented")
 
 
 @pytest.fixture(scope="module")
@@ -34,15 +32,16 @@ def test_jrn_01_2_boot_marker(boot):
     assert startup and hits[0] > max(startup), "marker before the ESP-IDF startup lines"
 
 
-@PHASE2
 def test_jrn_01_3_display_up(boot):
     shown = [(ms, msg) for _, ms, msg in hello_lines(boot)
              if msg == 'shown line1="Hello, world!"']
     assert shown, "no `hello: shown` in the boot capture"
+    # FSD FR-5.2's contract times from the bench reset command on the bench wall
+    # clock; the bench cannot timestamp a reset capture, so the device's own
+    # ms-since-reset is used (spec-defect finding raised to /define).
     assert int(shown[0][0]) <= 3000
 
 
-@PHASE2
 def test_jrn_01_4_operator_sees_greeting(bench, boot):
     assert any("hello: shown" in ln for ln in boot), "display not up; nothing to show"
     assert bench.human_interaction(
@@ -60,12 +59,21 @@ def test_jrn_01_5_uptime_ticks(bench, dut, boot):
         assert 900 <= t1 - t0 <= 1100, f"gap {t1 - t0} ms at N={n1}"
 
 
-@PHASE2
 def test_jrn_01_6_operator_sees_uptime(bench, dut, boot):
+    """The operator presses DONE when line 2 shows a target value; the log decides.
+
+    A person cannot compare a counter that changes every second against a
+    number to within ±1, so the comparison is the instrument's: at the press,
+    the logged N must be the target within ±1. The first up= line after the
+    press is one refresh later, hence target .. target + 2.
+    """
     assert any("hello: shown" in ln for ln in boot), "display not up; nothing to show"
     m = bench.serial_monitor(dut, pattern="hello: up=", timeout=5)
-    n = int(re.search(r"up=(\d+)", m.get("line") or "").group(1))
+    target = int(re.search(r"up=(\d+)", m.get("line") or "").group(1)) + 20
     assert bench.human_interaction(
-        f"JRN-01.6: the device just logged up={n}. Press DONE only if the second line "
-        f"reads 'Up: <N> s' with N within 1 of {n} (allow for the time it took to read this).",
-        timeout=300)
+        f"JRN-01.6. Watch the second line count up. Press DONE at the moment it reads "
+        f"exactly 'Up: {target} s' (same spelling: 'Up:', the number, a space, 's'). "
+        "If it reads anything else, or you miss it, press CANCEL.", timeout=120)
+    after = bench.serial_monitor(dut, pattern="hello: up=", timeout=3)
+    n = int(re.search(r"up=(\d+)", after.get("line") or "").group(1))
+    assert target <= n <= target + 2, f"pressed at {target}, log then at {n}"
