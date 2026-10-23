@@ -195,7 +195,7 @@ tests:
     tier: bench
     verifies: [FR-5.2, FR-7.1]
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
-    observable: "`hello: shown line1=\"Hello, world!\"` within 3.0 s of the reset command"
+    observable: "`hello: shown line1=\"Hello, world!\"` with log timestamp ≤ 3000 ms, in the boot the reset caused"
     impl: tests/bench/test_journey.py::test_jrn_01_3_display_up
     result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 

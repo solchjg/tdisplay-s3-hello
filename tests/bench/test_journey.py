@@ -36,9 +36,7 @@ def test_jrn_01_3_display_up(boot):
     shown = [(ms, msg) for _, ms, msg in hello_lines(boot)
              if msg == 'shown line1="Hello, world!"']
     assert shown, "no `hello: shown` in the boot capture"
-    # FSD FR-5.2's contract times from the bench reset command on the bench wall
-    # clock; the bench cannot timestamp a reset capture, so the device's own
-    # ms-since-reset is used (spec-defect finding raised to /define).
+    # FSD FR-5.2 (0.1.1): the line's own log timestamp, ms since the chip's reset.
     assert int(shown[0][0]) <= 3000
 
 
