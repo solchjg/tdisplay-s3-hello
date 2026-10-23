@@ -13,7 +13,7 @@ RUN apt-get update \
 # Bench-tier tools live in their own venv: the IDF Python env is only
 # activated by the image's entrypoint, so `pip` is not on PATH at build time.
 RUN python3 -m venv /opt/venv \
- && /opt/venv/bin/pip install --no-cache-dir 'pytest==8.*' 'ruff==0.16.1' pyserial
+ && /opt/venv/bin/pip install --no-cache-dir 'pytest==8.*' 'ruff==0.16.1' 'pyyaml==6.*' pyserial
 ENV PATH=/opt/venv/bin:$PATH
 
 RUN mkdir -p /opt/testbench \

@@ -36,7 +36,12 @@ capabilities:
     what: Flash an image set to SLOT4 over USB (Harness /api/flash)
     available: yes
     # Usage notes (2026-10-23): upload the artefact's flash_args file with the
-    # parts; without it the bench flashes at 40 MHz, not the build's 80m.
+    # parts (tests/bench/conftest.py does). Even then the bench flashes 40 MHz
+    # and keeps the flash size: pi/portal.py's flash_args parser reads only
+    # the first option of a line, and ESP-IDF writes all three on one line
+    # (DUT boot: "Boot SPI Speed : 40MHz" for an 80m build, fw 0.0.0-41110fb).
+    # Bench fault: testbench change request candidate. No FSD clause states a
+    # flash clock, so nothing here is blocked.
     # /api/chip/info runs esptool and appears in the activity log as
     # "flash(SLOT4)" with about 665 bytes of output (02:47:11Z, 03:04:14Z); it
     # reads identity and does not write an image.
@@ -70,6 +75,17 @@ capabilities:
     # Bench reports gpio_wired=false for SLOT4 (EN pulse produced no reset).
     # Consequence: no GPIO recovery of a crash-looping or wedged DUT; recovery
     # is USB reset, or an operator holding BOOT (GPIO 0) while replugging USB-C.
+  bench-wifi-scan-bssid:
+    what: WiFi scan that reports each network's BSSID, so the DUT's MAC can be recognised (FR-9.1 air, WiFi half)
+    available: no
+    # /api/wifi/scan returns ssid, rssi, auth, channel only (2026-10-23).
+    # Consequence: TC-SEC-03 cannot run; FR-9.1's air check stands on BLE plus
+    # the host-tier symbol check. Testbench change request candidate.
+  seam-lcd-fault-injection:
+    what: "Test build whose LCD interface returns a chosen esp_err_t at init or the k-th draw, logging `lcdfi: call` (FSD §5.5)"
+    available: no
+    # Declared early for lead time (Wave 3 negative tests FR-5.6 – FR-5.10,
+    # FR-7.2, FR-7.4 need it); built with the LCD interface in Phase 2.
   release-verification:
     what: Tag-triggered journey run against the released artifact
     available: yes
@@ -154,8 +170,8 @@ tests:
     verifies: [C-10.5]
     needs: [bench-flash, dut-tdisplay-s3-slot4]
     observable: flash reports success for every image in flash_args
-    impl: ""
-    result: {status: not done, reason: test not written, commit: null}
+    impl: tests/bench/test_journey.py::test_jrn_01_1_flash
+    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
 
   - id: JRN-01.2
     title: USB reset reaches the boot marker
@@ -167,8 +183,8 @@ tests:
     verifies: [FR-7.6, C-10.5]
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     observable: "`Init complete, running event-driven` exactly once on SLOT4 serial"
-    impl: ""
-    result: {status: not done, reason: test not written, commit: null}
+    impl: tests/bench/test_journey.py::test_jrn_01_2_boot_marker
+    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
 
   - id: JRN-01.3
     title: Display comes up within the boot deadline
@@ -180,8 +196,8 @@ tests:
     verifies: [FR-5.2, FR-7.1]
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: "`hello: shown line1=\"Hello, world!\"` within 3.0 s of the reset command"
-    impl: ""
-    result: {status: not done, reason: test not written, commit: null}
+    impl: tests/bench/test_journey.py::test_jrn_01_3_display_up
+    result: {status: not done, reason: "xfail (strict): FSD Phase 2 display not implemented", commit: 9248c4f}
 
   - id: JRN-01.4
     title: Operator sees the greeting upright, white on black
@@ -193,8 +209,8 @@ tests:
     verifies: [FR-5.1, FR-6.1, FR-6.3]
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: operator confirms `Hello, world!` on the top line, upright with USB-C on the right, white on black
-    impl: ""
-    result: {status: not done, reason: test not written, commit: null}
+    impl: tests/bench/test_journey.py::test_jrn_01_4_operator_sees_greeting
+    result: {status: not done, reason: "xfail (strict): FSD Phase 2 display not implemented", commit: 9248c4f}
 
   - id: JRN-01.5
     title: Uptime ticks once per second
@@ -206,8 +222,8 @@ tests:
     verifies: [FR-5.4, FR-5.5, FR-7.3]
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     observable: "`hello: up=<N>`, N +1 per line, gaps 900–1100 ms over 10 lines"
-    impl: ""
-    result: {status: not done, reason: test not written, commit: null}
+    impl: tests/bench/test_journey.py::test_jrn_01_5_uptime_ticks
+    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
 
   - id: JRN-01.6
     title: Operator sees the uptime line match the log
@@ -218,9 +234,9 @@ tests:
     tier: bench
     verifies: [FR-5.3]
     needs: [bench-operator-prompt, operator-at-bench, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
-    observable: operator confirms line 2 reads `Up: <N> s`, N within ±1 of the latest log line
-    impl: ""
-    result: {status: not done, reason: test not written, commit: null}
+    observable: "operator confirms line 2 reads `Up: <N> s`, N within ±1 of the latest log line"
+    impl: tests/bench/test_journey.py::test_jrn_01_6_operator_sees_uptime
+    result: {status: not done, reason: "xfail (strict): FSD Phase 2 display not implemented", commit: 9248c4f}
 
   - id: TC-TIER-01
     title: Host tier runs (C compiler and pytest available)
@@ -232,4 +248,175 @@ tests:
     # Infrastructure check: proves the tier exists, verifies no requirement.
     needs: []
     impl: tests/host/test_tier.py::test_host_c_compiler_builds_and_runs
-    result: {status: not done, reason: never run, commit: null}
+    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI host tests + lint, 9248c4f"}
+
+  - id: TC-BUILD-01
+    title: Build targets esp32s3
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: host
+    verifies: [C-10.1]
+    needs: []
+    impl: tests/host/test_build.py::test_target_is_esp32s3
+    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI Build Firmware run 39894606858 (9248c4f)"}
+
+  - id: TC-BUILD-02
+    title: Build uses ESP-IDF v6.0.2 (app descriptor idf_ver)
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: host
+    verifies: [C-10.2]
+    needs: []
+    impl: tests/host/test_build.py::test_idf_version_is_v6_0_2
+    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI Build Firmware run 39894606858 (9248c4f)"}
+
+  - id: TC-BUILD-03
+    title: Build states 16 MB flash
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: host
+    verifies: [C-10.3]
+    needs: []
+    impl: tests/host/test_build.py::test_flash_size_is_stated_16mb
+    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI Build Firmware run 39894606858 (9248c4f)"}
+
+  - id: TC-BUILD-04
+    title: App fits the default single-app 1 MB factory partition
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: host
+    verifies: [C-10.4]
+    needs: []
+    impl: tests/host/test_build.py::test_app_fits_default_single_app_partition
+    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI Build Firmware run 39894606858 (9248c4f)"}
+
+  - id: TC-BUILD-05
+    title: Board in SLOT4 reads 16 MB flash
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: bench
+    verifies: [C-10.3]
+    needs: [dut-tdisplay-s3-slot4]
+    impl: tests/bench/test_board.py::test_board_flash_is_16mb
+    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+
+  - id: TC-SEC-01
+    title: No WiFi or BT init symbol linked
+    shape: atomic
+    kind: security
+    wave: 1
+    fsd_phase: 1
+    tier: host
+    verifies: [FR-9.1]
+    needs: []
+    # Non-adversarial static check of the profile's one protection; adversarial security is Wave 3.
+    impl: tests/host/test_build.py::test_no_radio_initialisation_linked
+    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI Build Firmware run 39894606858 (9248c4f)"}
+
+  - id: TC-SEC-02
+    title: DUT does not advertise on BLE
+    shape: atomic
+    kind: security
+    wave: 1
+    fsd_phase: 1
+    tier: bench
+    verifies: [FR-9.1]
+    needs: [bench-ble-scan, dut-tdisplay-s3-slot4]
+    impl: tests/bench/test_board.py::test_dut_does_not_advertise_on_ble
+    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+
+  - id: TC-SEC-03
+    title: DUT runs no WiFi AP (scan by BSSID)
+    shape: atomic
+    kind: security
+    wave: 1
+    fsd_phase: 1
+    tier: bench
+    verifies: [FR-9.1]
+    needs: [bench-wifi-scan-bssid, dut-tdisplay-s3-slot4]
+    impl: ""
+    result: {status: not done, reason: "needs bench-wifi-scan-bssid (available: no)", commit: null}
+
+  - id: TC-LOG-01
+    title: "Up-line format core: up=0, up=4294967295"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: host
+    verifies: [FR-7.3]
+    needs: []
+    impl: tests/host/test_hello_log.py::test_up_line_format
+    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI host tests + lint, 9248c4f"}
+
+  - id: TC-LOG-02
+    title: "Every hello: line carries the ms timestamp prefix"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: target
+    verifies: [FR-7.5]
+    needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
+    impl: tests/bench/test_heartbeat.py::test_every_hello_line_has_the_timestamp_prefix
+    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+
+  - id: TC-LOG-03
+    title: One up= line per refresh, no extra text
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: target
+    verifies: [FR-7.3]
+    needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
+    # The contract's drawn-value match (with FR-5.3) is Phase 2 and joins this test then.
+    impl: tests/bench/test_heartbeat.py::test_one_up_line_per_refresh
+    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+
+  - id: TC-HELLO-01
+    title: Refresh every 1000 ± 100 ms; 60 refreshes span 60 ± 1 s wall
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: target
+    verifies: [FR-5.4]
+    needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
+    impl: tests/bench/test_heartbeat.py::test_refresh_period
+    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+
+  - id: TC-HELLO-02
+    title: N steps by exactly 1 and stays within 1 of the log clock
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: target
+    verifies: [FR-5.5]
+    needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
+    impl: tests/bench/test_heartbeat.py::test_uptime_steps_by_one_and_tracks_the_clock
+    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+
+  - id: TC-TIER-02
+    title: Test plan parses as YAML with unique ids
+    shape: atomic
+    kind: standard
+    wave: 1
+    tier: host
+    verifies: []
+    # Infrastructure check: the plan was unparseable from the harness commit
+    # until 2026-10-23 (an unquoted `Up: <N> s`), and no grep-based check saw it.
+    needs: []
+    impl: tests/host/test_plan.py::test_plan_is_valid_yaml_with_unique_ids
+    result: {status: not done, reason: never run in CI, commit: null}

@@ -1,6 +1,13 @@
 # Bench tests
 
-Journey (`JRN-01.*`) and atomic bench tests, driven through `TestbenchDriver`
-against SLOT4. None written yet; each is declared in
-[`../../testing/test-plan.yaml`](../../testing/test-plan.yaml) and gets its
-`impl:` when written.
+Journey (`JRN-01.*`, marker `journey`) and atomic bench/target tests, run
+against SLOT4 through `TestbenchDriver`. Each is declared in
+[`../../testing/test-plan.yaml`](../../testing/test-plan.yaml) with its `impl:`.
+
+```bash
+PYTHONPATH=<harness>/pytest FIRMWARE_DIR=<artefact>/coldflash pytest tests/bench -v
+```
+
+`FIRMWARE_DIR` is a CI artefact's `coldflash/` directory (it holds
+`flash_args`). Without it, or without the recorded unit in SLOT4, the tests
+skip: `not done`, never `failed`.
