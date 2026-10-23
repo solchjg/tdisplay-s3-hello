@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="58.153" timestamp="2026-10-23T04:27:26.135554+00:00" hostname="claude-code-master"><testcase classname="tests.bench.test_display" name="test_cold_start_leaves_no_stray_pixels" time="58.129" /></testsuite></testsuites>

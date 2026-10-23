@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="212.120" timestamp="2026-10-23T04:23:28.039254+00:00" hostname="claude-code-master"><testcase classname="tests.bench.test_display" name="test_operator_sees_both_lines_legible" time="106.596" /><testcase classname="tests.bench.test_display" name="test_operator_sees_backlight_on" time="12.312" /><testcase classname="tests.bench.test_display" name="test_cold_start_leaves_no_stray_pixels" time="21.155"><failure message="testbench_driver.CommandError: monitor: SLOT4: proxy not running">bench = &lt;testbench_driver.TestbenchDriver object at 0x7a17d0cd3b60&gt;
+dut = 'SLOT4'
+flashed = {'ok': True, 'output': 'esptool v5.6.0\nSerial port /dev/ttyACM0:\nConnecting....\nConnected to ESP32-S3 on /dev/ttyAC...059.2 kbit/s).\nVerifying written data...\nHash of data verified.\n\nHard resetting via RTS pin...\n', 'returncode': 0}
+
+    def test_cold_start_leaves_no_stray_pixels(bench, dut, flashed):
+        assert bench.human_interaction(
+            "TC-LCD-06 (power cycle). Unplug the T-Display-S3's USB-C cable, wait 5 seconds, "
+            "plug it back in, then press DONE.", timeout=300), "power cycle not confirmed"
+        deadline = time.monotonic() + 30
+        while time.monotonic() &lt; deadline:
+            slot = bench.get_slot(dut)
+            if slot.get("present") and slot.get("state") in ("idle", "running"):
+                break
+            time.sleep(1)
+        else:
+            pytest.fail(f"{dut} did not re-enumerate within 30 s of the replug")
+&gt;       up = bench.serial_monitor(dut, pattern="hello: up=", timeout=15)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/bench/test_display.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../Embedded-AI-Harness/pytest/testbench_driver.py:444: in serial_monitor
+    result = self._api_post(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;testbench_driver.TestbenchDriver object at 0x7a17d0cd3b60&gt;
+path = '/api/serial/monitor'
+body = {'pattern': 'hello: up=', 'slot': 'SLOT4', 'timeout': 15}, timeout = 20
+
+    def _api_post(self, path: str, body: Optional[dict] = None,
+                  timeout: float = 10) -&gt; dict:
+        """POST JSON to an API endpoint, return parsed JSON."""
+        url = f"{self.base_url}{path}"
+        data_bytes = json.dumps(body or {}).encode("utf-8")
+        req = urllib.request.Request(
+            url, data=data_bytes,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                data = json.loads(resp.read())
+        except urllib.error.URLError as e:
+            raise CommandTimeout(f"POST {path}: {e}")
+        except Exception as e:
+            raise CommandTimeout(f"POST {path}: {e}")
+    
+        if not data.get("ok", False):
+            cmd = path.split("/")[-1]
+&gt;           raise CommandError(cmd, data)
+E           testbench_driver.CommandError: monitor: SLOT4: proxy not running
+
+../Embedded-AI-Harness/pytest/testbench_driver.py:187: CommandError</failure></testcase><testcase classname="tests.bench.test_journey" name="test_jrn_01_4_operator_sees_greeting" time="40.119" /><testcase classname="tests.bench.test_journey" name="test_jrn_01_6_operator_sees_uptime" time="31.887" /></testsuite></testsuites>

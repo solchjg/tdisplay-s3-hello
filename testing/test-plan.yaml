@@ -40,8 +40,9 @@ capabilities:
     # and keeps the flash size: pi/portal.py's flash_args parser reads only
     # the first option of a line, and ESP-IDF writes all three on one line
     # (DUT boot: "Boot SPI Speed : 40MHz" for an 80m build, fw 0.0.0-41110fb).
-    # Bench fault: testbench change request candidate. No FSD clause states a
-    # flash clock, so nothing here is blocked.
+    # Bench fault filed: SensorsIot/Embedded-AI-Harness#52. No FSD clause states
+    # a flash clock, so nothing here is blocked.
+    # /api/chip/info is logged as "flash(SLOT4)": filed as #53.
     # /api/chip/info runs esptool and appears in the activity log as
     # "flash(SLOT4)" with about 665 bytes of output (02:47:11Z, 03:04:14Z); it
     # reads identity and does not write an image.
@@ -63,7 +64,7 @@ capabilities:
     # boot B; the board then runs boot C, whose first ~1 s nobody reads
     # (raw dump: testing/evidence/runs/slot4-double-reset-ring.json). Fine for
     # "what does a boot print"; wrong for any no-reset window. Bench fault:
-    # testbench change request candidate.
+    # SensorsIot/Embedded-AI-Harness#47 (reproduction and code path commented).
   bench-jtag-reset:
     what: Reset SLOT4 through its built-in USB-JTAG in a debug session, keeping the serial proxy up (Harness debug + serial reset)
     available: yes
@@ -92,7 +93,7 @@ capabilities:
     available: no
     # /api/wifi/scan returns ssid, rssi, auth, channel only (2026-10-23).
     # Consequence: TC-SEC-03 cannot run; FR-9.1's air check stands on BLE plus
-    # the host-tier symbol check. Testbench change request candidate.
+    # the host-tier symbol check. Bench gap: SensorsIot/Embedded-AI-Harness#50.
   seam-lcd-fault-injection:
     what: "Test build whose LCD interface returns a chosen esp_err_t at init or the k-th draw, logging `lcdfi: call` (FSD §5.5)"
     available: yes
@@ -221,7 +222,7 @@ tests:
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: operator confirms `Hello, world!` on the top line, upright with USB-C on the right, white on black
     impl: tests/bench/test_journey.py::test_jrn_01_4_operator_sees_greeting
-    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-operator.junit.xml + bench activity log 03:42-03:47Z (Human confirmed)"}
+    result: {status: successful, commit: 5f9a4b8, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-operator.junit.xml + bench activity log 04:23-04:27Z (Human confirmed)"}
 
   - id: JRN-01.5
     title: Uptime ticks once per second
@@ -249,7 +250,7 @@ tests:
     impl: tests/bench/test_journey.py::test_jrn_01_6_operator_sees_uptime
     # 2026-10-23 03:47Z run at 2cd9769 failed: operator pressed DONE late (operator
     # confirmed); lead raised from 20 s to 30 s in d2834e1, then green.
-    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-jrn016-rerun.junit.xml + bench activity log (Human confirmed)"}
+    result: {status: successful, commit: 5f9a4b8, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-operator.junit.xml + bench activity log 04:23-04:27Z (Human confirmed)"}
 
   - id: TC-TIER-01
     title: Host tier runs (C compiler and pytest available)
@@ -540,7 +541,7 @@ tests:
     verifies: [C-6.1, C-6.2, C-6.3, C-6.4, C-6.5]
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     impl: tests/bench/test_display.py::test_operator_sees_both_lines_legible
-    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-operator.junit.xml + bench activity log 03:42-03:47Z (Human confirmed)"}
+    result: {status: successful, commit: 5f9a4b8, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-operator.junit.xml + bench activity log 04:23-04:27Z (Human confirmed)"}
 
   - id: TC-LCD-06
     title: "Cold start (USB-C power cycle): no stray pixels"
@@ -552,7 +553,9 @@ tests:
     verifies: [FR-6.4]
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     impl: tests/bench/test_display.py::test_cold_start_leaves_no_stray_pixels
-    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-operator.junit.xml + bench activity log 03:42-03:47Z (Human confirmed)"}
+    # 04:25Z run at 5f9a4b8 failed before its stray-pixel prompt: the monitor ran
+    # before the serial proxy was back after the replug (test defect, fixed c25b1bf).
+    result: {status: successful, commit: c25b1bf, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-lcd06.junit.xml + bench activity log (Human confirmed)"}
 
   - id: TC-LCD-07
     title: "Operator: backlight on in SHOWING"
@@ -564,7 +567,7 @@ tests:
     verifies: [FR-6.7]
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     impl: tests/bench/test_display.py::test_operator_sees_backlight_on
-    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-operator.junit.xml + bench activity log 03:42-03:47Z (Human confirmed)"}
+    result: {status: successful, commit: 5f9a4b8, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-operator.junit.xml + bench activity log 04:23-04:27Z (Human confirmed)"}
 
   - id: TC-LOG-04
     title: "hello: shown logged exactly once per boot"
