@@ -184,7 +184,7 @@ tests:
     needs: [bench-flash, dut-tdisplay-s3-slot4]
     observable: flash reports success for every image in flash_args
     impl: tests/bench/test_journey.py::test_jrn_01_1_flash
-    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
+    result: {status: successful, commit: ba68a02, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-ba68a02/bench.junit.xml + jrn01-boot.log"}
 
   - id: JRN-01.2
     title: USB reset reaches the boot marker
@@ -197,7 +197,7 @@ tests:
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     observable: "`Init complete, running event-driven` exactly once on SLOT4 serial"
     impl: tests/bench/test_journey.py::test_jrn_01_2_boot_marker
-    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
+    result: {status: successful, commit: ba68a02, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-ba68a02/bench.junit.xml + jrn01-boot.log"}
 
   - id: JRN-01.3
     title: Display comes up within the boot deadline
@@ -210,7 +210,7 @@ tests:
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: "`hello: shown line1=\"Hello, world!\"` with log timestamp ≤ 3000 ms, in the boot the reset caused"
     impl: tests/bench/test_journey.py::test_jrn_01_3_display_up
-    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
+    result: {status: successful, commit: ba68a02, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-ba68a02/bench.junit.xml + jrn01-boot.log"}
 
   - id: JRN-01.4
     title: Operator sees the greeting upright, white on black
@@ -223,7 +223,7 @@ tests:
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: operator confirms `Hello, world!` on the top line, upright with USB-C on the right, white on black
     impl: tests/bench/test_journey.py::test_jrn_01_4_operator_sees_greeting
-    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + bench-activity-operator.json (Human confirmed)"}
+    result: {status: successful, commit: ba68a02, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-ba68a02/bench.junit.xml + bench-activity-operator.json (Human confirmed)"}
 
   - id: JRN-01.5
     title: Uptime ticks once per second
@@ -236,7 +236,7 @@ tests:
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     observable: "`hello: up=<N>`, N +1 per line, gaps 900–1100 ms over 10 lines"
     impl: tests/bench/test_journey.py::test_jrn_01_5_uptime_ticks
-    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
+    result: {status: successful, commit: ba68a02, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-ba68a02/bench.junit.xml + jrn01-boot.log"}
 
   - id: JRN-01.6
     title: Operator sees the uptime line match the log
@@ -251,7 +251,7 @@ tests:
     impl: tests/bench/test_journey.py::test_jrn_01_6_operator_sees_uptime
     # 2026-10-23 03:47Z run at 2cd9769 failed: operator pressed DONE late (operator
     # confirmed); lead raised from 20 s to 30 s in d2834e1, then green.
-    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + bench-activity-operator.json (Human confirmed)"}
+    result: {status: successful, commit: ba68a02, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-ba68a02/bench.junit.xml + bench-activity-operator.json (Human confirmed)"}
 
   - id: TC-TIER-01
     title: Host tier runs (C compiler and pytest available)
@@ -323,7 +323,7 @@ tests:
     verifies: [C-10.3]
     needs: [dut-tdisplay-s3-slot4]
     impl: tests/bench/test_board.py::test_board_flash_is_16mb
-    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
+    result: {status: successful, commit: ba68a02, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-ba68a02/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-SEC-01
     title: No WiFi or BT init symbol linked
@@ -348,7 +348,7 @@ tests:
     verifies: [FR-9.1]
     needs: [bench-ble-scan, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_board.py::test_dut_does_not_advertise_on_ble
-    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
+    result: {status: successful, commit: ba68a02, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-ba68a02/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-SEC-03
     title: "DUT advertises no default-SSID SoftAP (ESP_ + MAC tail)"
@@ -361,7 +361,7 @@ tests:
     needs: [bench-wifi-scan, dut-tdisplay-s3-slot4]
     # FSD 0.1.2: SSID match, because the scan has no BSSID (#50); R-6 says what it cannot see.
     impl: tests/bench/test_board.py::test_dut_runs_no_default_softap
-    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
+    result: {status: successful, commit: ba68a02, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-ba68a02/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-LOG-01
     title: "Up-line format core: up=0, up=4294967295"

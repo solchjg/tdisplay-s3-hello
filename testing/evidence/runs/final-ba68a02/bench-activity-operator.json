@@ -1,0 +1,22 @@
+[
+  {
+    "ts": "2026-10-23T05:01:56.451003+00:00",
+    "msg": "Human interaction: JRN-01.4: hold the T-Display-S3 with USB-C on your RIGHT. Press DONE only if the top line reads exactly 'Hello, world!', upright, white text on black.",
+    "cat": "step"
+  },
+  {
+    "ts": "2026-10-23T05:02:28.379121+00:00",
+    "msg": "Human confirmed: JRN-01.4: hold the T-Display-S3 with USB-C on your RIGHT. Press DONE only if the top line reads exactly 'Hello, world!', upright, white text on black.",
+    "cat": "ok"
+  },
+  {
+    "ts": "2026-10-23T05:02:41.518400+00:00",
+    "msg": "Human interaction: JRN-01.6. Watch the second line count up. Press DONE at the moment it reads exactly 'Up: 75 s' (same spelling: 'Up:', the number, a space, 's'). If it reads anything else, or you miss it, press CANCEL.",
+    "cat": "step"
+  },
+  {
+    "ts": "2026-10-23T05:03:12.039957+00:00",
+    "msg": "Human confirmed: JRN-01.6. Watch the second line count up. Press DONE at the moment it reads exactly 'Up: 75 s' (same spelling: 'Up:', the number, a space, 's'). If it reads anything else, or you miss it, press CANCEL.",
+    "cat": "ok"
+  }
+]
