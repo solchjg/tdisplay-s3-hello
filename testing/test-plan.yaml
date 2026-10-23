@@ -206,7 +206,8 @@ tests:
     wave: 1
     fsd_phase: 2
     tier: bench
-    verifies: [FR-5.2, FR-7.1]
+    # FR-7.1 (shown exactly once per boot) is TC-LOG-04's; this step checks only that it appears in time.
+    verifies: [FR-5.2]
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: "`hello: shown line1=\"Hello, world!\"` with log timestamp ≤ 3000 ms, in the boot the reset caused"
     impl: tests/bench/test_journey.py::test_jrn_01_3_display_up
@@ -232,7 +233,8 @@ tests:
     wave: 1
     fsd_phase: 1
     tier: bench
-    verifies: [FR-5.4, FR-5.5, FR-7.3]
+    # FR-7.3 (one up= line per refresh, no extra text) is TC-LOG-03's: this step skips non-matching lines.
+    verifies: [FR-5.4, FR-5.5]
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     observable: "`hello: up=<N>`, N +1 per line, gaps 900–1100 ms over 10 lines"
     impl: tests/bench/test_journey.py::test_jrn_01_5_uptime_ticks
@@ -245,7 +247,8 @@ tests:
     wave: 1
     fsd_phase: 2
     tier: bench
-    verifies: [FR-5.3, FR-7.3]
+    # FR-7.3's drawn-value match is FR-5.3's observation; FR-7.3 itself is TC-LOG-01/03 and JRN-01.5.
+    verifies: [FR-5.3]
     needs: [bench-operator-prompt, operator-at-bench, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: "operator presses DONE when line 2 reads `Up: <target> s`; the next logged N is target .. target+2"
     impl: tests/bench/test_journey.py::test_jrn_01_6_operator_sees_uptime
@@ -396,7 +399,7 @@ tests:
     tier: target
     verifies: [FR-7.3]
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
-    # The contract's drawn-value match (with FR-5.3) is Phase 2 and joins this test then.
+    # The contract's drawn-value match (with FR-5.3) is checked by JRN-01.6, under FR-5.3.
     impl: tests/bench/test_heartbeat.py::test_one_up_line_per_refresh
     result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
@@ -456,7 +459,8 @@ tests:
     wave: 1
     fsd_phase: 2
     tier: host
-    verifies: [FR-5.1]
+    # Pure core of FR-5.1's text; FR-5.1's contract is bench (operator), discharged by JRN-01.4.
+    verifies: []
     needs: []
     impl: tests/host/test_hello_logic.py::test_line1_text
     result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
@@ -468,7 +472,8 @@ tests:
     wave: 1
     fsd_phase: 2
     tier: host
-    verifies: [FR-5.2]
+    # State-table row T1 (host). FR-5.2's contract is bench, discharged by JRN-01.3.
+    verifies: []
     needs: []
     impl: tests/host/test_hello_logic.py::test_t1_boot_init_ok_enters_showing
     result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
@@ -480,7 +485,8 @@ tests:
     wave: 1
     fsd_phase: 2
     tier: host
-    verifies: [FR-5.4]
+    # State-table row T3 (host). FR-5.4's contract is target, discharged by TC-HELLO-01.
+    verifies: []
     needs: []
     impl: tests/host/test_hello_logic.py::test_t3_showing_tick_ok_stays_and_logs
     result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
@@ -590,7 +596,8 @@ tests:
     wave: 1
     fsd_phase: 2
     tier: host
-    verifies: [FR-7.1]
+    # Pure core of the FR-7.1 line; FR-7.1's contract is bench, discharged by TC-LOG-04.
+    verifies: []
     needs: []
     impl: tests/host/test_hello_log.py::test_shown_line_format
     result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
