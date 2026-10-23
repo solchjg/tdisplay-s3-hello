@@ -57,6 +57,18 @@ capabilities:
   bench-usb-reset:
     what: Reset the DUT in SLOT4 over USB-Serial/JTAG (Harness serial reset)
     available: yes
+    # Usage note (2026-10-23): on this native-USB S3 the DTR/RTS reset resets the
+    # chip a second time ~3.4 s after its 5 s capture, when the bench reopens
+    # the port (pi/portal.py serial_reset -> start_proxy). The capture shows
+    # boot B; the board then runs boot C, whose first ~1 s nobody reads
+    # (raw dump: testing/evidence/runs/slot4-double-reset-ring.json). Fine for
+    # "what does a boot print"; wrong for any no-reset window. Bench fault:
+    # testbench change request candidate.
+  bench-jtag-reset:
+    what: Reset SLOT4 through its built-in USB-JTAG in a debug session, keeping the serial proxy up (Harness debug + serial reset)
+    available: yes
+    # One boot, lines live in the ring with bench timestamps; the 5 s capture
+    # is re-pushed as a block sharing one timestamp (conftest.reset_and_follow).
   bench-operator-prompt:
     what: Blocking operator prompt with yes/no answer and timestamp (Harness human interaction)
     available: yes
@@ -587,7 +599,7 @@ tests:
     fsd_phase: 2
     tier: target
     verifies: [FR-5.6]
-    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: ""
     result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
 
@@ -611,7 +623,7 @@ tests:
     fsd_phase: 2
     tier: target
     verifies: [FR-5.7]
-    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: ""
     result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
 
@@ -635,7 +647,7 @@ tests:
     fsd_phase: 2
     tier: target
     verifies: [FR-5.8]
-    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: ""
     result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
 
@@ -659,7 +671,7 @@ tests:
     fsd_phase: 2
     tier: target
     verifies: [FR-5.9]
-    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: ""
     result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
 
@@ -671,7 +683,7 @@ tests:
     fsd_phase: 2
     tier: target
     verifies: [FR-5.10]
-    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: ""
     result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
 
@@ -683,7 +695,7 @@ tests:
     fsd_phase: 2
     tier: target
     verifies: [FR-7.2]
-    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: ""
     result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
 
@@ -695,6 +707,6 @@ tests:
     fsd_phase: 2
     tier: target
     verifies: [FR-7.4]
-    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: ""
     result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}

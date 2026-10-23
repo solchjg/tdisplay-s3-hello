@@ -1,0 +1,437 @@
+{
+ "t_flash": 1792728439.1471775,
+ "mark": 1792728438.462022,
+ "t_reset": 1792728450.2853155,
+ "t_ret": 1792728461.451258,
+ "cap": [
+  "ESP-ROM:esp32s3-20210327",
+  "Build:Mar 27 2021",
+  "rst:0x15 (USB_UART_CHIP_RESET),boot:0xb (SPI_FAST_FLASH_BOOT)",
+  "Saved PC:0x40378b56",
+  "SPIWP:0xee",
+  "mode:DIO, clock div:2",
+  "load:0x3fce2820,len:0x1548",
+  "load:0x403c8700,len:0xd68",
+  "load:0x403cb700,len:0x2f5c",
+  "entry 0x403c8904",
+  "I (29) boot: ESP-IDF v6.0.2 2nd stage bootloader",
+  "I (29) boot: compile time Oct 23 2026 04:02:04",
+  "I (30) boot: Multicore bootloader",
+  "I (31) boot: chip revision: v0.1",
+  "I (32) boot: efuse block revision: v1.2",
+  "I (32) boot.esp32s3: Boot SPI Speed : 40MHz",
+  "I (33) boot.esp32s3: SPI Mode       : DIO",
+  "I (35) boot.esp32s3: SPI Flash Size : 16MB",
+  "I (36) boot: Enabling RNG early entropy source...",
+  "I (37) boot: Partition Table:",
+  "I (39) boot: ## Label            Usage          Type ST Offset   Length",
+  "I (41) boot:  0 nvs              WiFi data        01 02 00009000 00006000",
+  "I (43) boot:  1 phy_init         RF data          01 01 0000f000 00001000",
+  "I (46) boot:  2 factory          factory app      00 00 00010000 00100000",
+  "I (47) boot: End of partition table",
+  "I (47) esp_image: segment 0: paddr=00010020 vaddr=3c010020 size=08f94h ( 36756) map",
+  "I (58) esp_image: segment 1: paddr=00018fbc vaddr=3fc90000 size=02f3ch ( 12092) load",
+  "I (63) esp_image: segment 2: paddr=0001bf00 vaddr=40374000 size=04118h ( 16664) load",
+  "I (68) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=0f7e4h ( 63460) map",
+  "I (86) esp_image: segment 4: paddr=0002f80c vaddr=40378118 size=07e90h ( 32400) load",
+  "I (96) esp_image: segment 5: paddr=000376a4 vaddr=50000000 size=00024h (    36) load",
+  "I (102) boot: Loaded app from partition at offset 0x10000",
+  "I (102) boot: Disabling RNG early entropy source...",
+  "I (104) cpu_start: Multicore app",
+  "I (114) cpu_start: Pro cpu start user code",
+  "I (114) cpu_start: cpu freq: 160000000 Hz",
+  "I (114) app_init: Application information:",
+  "I (114) app_init: Project name:     tdisplay_hello_lcdfault",
+  "I (116) app_init: App version:      047cd14",
+  "I (117) app_init: Compile time:     Oct 23 2026 04:02:36",
+  "I (119) app_init: ELF file SHA256:  32c6aa206...",
+  "I (120) app_init: ESP-IDF:          v6.0.2",
+  "I (121) efuse_init: Min chip rev:     v0.0",
+  "I (123) efuse_init: Max chip rev:     v0.99",
+  "I (123) efuse_init: Chip rev:         v0.1",
+  "I (124) heap_init: Initializing. RAM available for dynamic allocation:",
+  "I (126) heap_init: At 3FC938B0 len 00055E60 (343 KiB): RAM",
+  "I (126) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM",
+  "I (127) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM",
+  "I (129) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM",
+  "I (130) spi_flash: detected chip: winbond",
+  "I (130) spi_flash: flash io: dio",
+  "I (132) sleep_gpio: Configure to isolate all GPIO pins in sleep state",
+  "I (133) sleep_gpio: Enable automatic switching of GPIO sleep configuration",
+  "I (135) main_task: Started on CPU0",
+  "I (135) main_task: Calling app_main()",
+  "I (135) lcdfi: call start",
+  "I (135) lcdfi: call backlight 1",
+  "I (135) hello: shown line1=\"Hello, world!\"",
+  "I (135) main: Init complete, running event-driven",
+  "I (1135) lcdfi: call draw 1",
+  "I (1135) hello: up=1",
+  "I (2135) lcdfi: call draw 2",
+  "I (2135) hello: up=2",
+  "I (3135) lcdfi: call draw 3",
+  "I (3135) hello: up=3",
+  "I (4135) lcdfi: call draw 4",
+  "I (4135) hello: up=4",
+  "I (5135) lcdfi: call draw 5",
+  "I (5135) hello: up=5",
+  "E (5135) hello: lcd write failed: ESP_ERR_INVALID_STATE"
+ ],
+ "ring": [
+  {
+   "ts": 1792728458.9500973,
+   "text": "ESP-ROM:esp32s3-20210327"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "Build:Mar 27 2021"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "rst:0x15 (USB_UART_CHIP_RESET),boot:0xb (SPI_FAST_FLASH_BOOT)"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "Saved PC:0x40378b56"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "SPIWP:0xee"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "mode:DIO, clock div:2"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "load:0x3fce2820,len:0x1548"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "load:0x403c8700,len:0xd68"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "load:0x403cb700,len:0x2f5c"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "entry 0x403c8904"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (29) boot: ESP-IDF v6.0.2 2nd stage bootloader"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (29) boot: compile time Oct 23 2026 04:02:04"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (30) boot: Multicore bootloader"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (31) boot: chip revision: v0.1"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (32) boot: efuse block revision: v1.2"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (32) boot.esp32s3: Boot SPI Speed : 40MHz"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (33) boot.esp32s3: SPI Mode       : DIO"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (35) boot.esp32s3: SPI Flash Size : 16MB"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (36) boot: Enabling RNG early entropy source..."
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (37) boot: Partition Table:"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (39) boot: ## Label            Usage          Type ST Offset   Length"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (41) boot:  0 nvs              WiFi data        01 02 00009000 00006000"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (43) boot:  1 phy_init         RF data          01 01 0000f000 00001000"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (46) boot:  2 factory          factory app      00 00 00010000 00100000"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (47) boot: End of partition table"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (47) esp_image: segment 0: paddr=00010020 vaddr=3c010020 size=08f94h ( 36756) map"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (58) esp_image: segment 1: paddr=00018fbc vaddr=3fc90000 size=02f3ch ( 12092) load"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (63) esp_image: segment 2: paddr=0001bf00 vaddr=40374000 size=04118h ( 16664) load"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (68) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=0f7e4h ( 63460) map"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (86) esp_image: segment 4: paddr=0002f80c vaddr=40378118 size=07e90h ( 32400) load"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (96) esp_image: segment 5: paddr=000376a4 vaddr=50000000 size=00024h (    36) load"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (102) boot: Loaded app from partition at offset 0x10000"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (102) boot: Disabling RNG early entropy source..."
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (104) cpu_start: Multicore app"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (114) cpu_start: Pro cpu start user code"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (114) cpu_start: cpu freq: 160000000 Hz"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (114) app_init: Application information:"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (114) app_init: Project name:     tdisplay_hello_lcdfault"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (116) app_init: App version:      047cd14"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (117) app_init: Compile time:     Oct 23 2026 04:02:36"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (119) app_init: ELF file SHA256:  32c6aa206..."
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (120) app_init: ESP-IDF:          v6.0.2"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (121) efuse_init: Min chip rev:     v0.0"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (123) efuse_init: Max chip rev:     v0.99"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (123) efuse_init: Chip rev:         v0.1"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (124) heap_init: Initializing. RAM available for dynamic allocation:"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (126) heap_init: At 3FC938B0 len 00055E60 (343 KiB): RAM"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (126) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (127) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (129) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (130) spi_flash: detected chip: winbond"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (130) spi_flash: flash io: dio"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (132) sleep_gpio: Configure to isolate all GPIO pins in sleep state"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (133) sleep_gpio: Enable automatic switching of GPIO sleep configuration"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (135) main_task: Started on CPU0"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (135) main_task: Calling app_main()"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (135) lcdfi: call start"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (135) lcdfi: call backlight 1"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (135) hello: shown line1=\"Hello, world!\""
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (135) main: Init complete, running event-driven"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (1135) lcdfi: call draw 1"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (1135) hello: up=1"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (2135) lcdfi: call draw 2"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (2135) hello: up=2"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (3135) lcdfi: call draw 3"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (3135) hello: up=3"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (4135) lcdfi: call draw 4"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (4135) hello: up=4"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (5135) lcdfi: call draw 5"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "I (5135) hello: up=5"
+  },
+  {
+   "ts": 1792728458.9500973,
+   "text": "E (5135) hello: lcd write failed: ESP_ERR_INVALID_STATE"
+  },
+  {
+   "ts": 1792728462.3697844,
+   "text": "I (1136) lcdfi: call draw 1"
+  },
+  {
+   "ts": 1792728462.3698027,
+   "text": "I (1136) hello: up=1"
+  },
+  {
+   "ts": 1792728463.3686368,
+   "text": "I (2136) lcdfi: call draw 2"
+  },
+  {
+   "ts": 1792728463.368654,
+   "text": "I (2136) hello: up=2"
+  },
+  {
+   "ts": 1792728464.3689084,
+   "text": "I (3136) lcdfi: call draw 3"
+  },
+  {
+   "ts": 1792728464.3689265,
+   "text": "I (3136) hello: up=3"
+  },
+  {
+   "ts": 1792728465.3690996,
+   "text": "I (4136) lcdfi: call draw 4"
+  },
+  {
+   "ts": 1792728465.3691173,
+   "text": "I (4136) hello: up=4"
+  },
+  {
+   "ts": 1792728466.36978,
+   "text": "I (5136) lcdfi: call draw 5"
+  },
+  {
+   "ts": 1792728466.3698134,
+   "text": "I (5136) hello: up=5"
+  },
+  {
+   "ts": 1792728466.3698335,
+   "text": "E (5136) hello: lcd write failed: ESP_ERR_INVALID_STATE"
+  },
+  {
+   "ts": 1792728467.3689044,
+   "text": "I (6136) hello: up=6"
+  },
+  {
+   "ts": 1792728468.368942,
+   "text": "I (7136) hello: up=7"
+  },
+  {
+   "ts": 1792728469.3691232,
+   "text": "I (8136) hello: up=8"
+  },
+  {
+   "ts": 1792728470.3692534,
+   "text": "I (9136) hello: up=9"
+  },
+  {
+   "ts": 1792728471.3692846,
+   "text": "I (10136) hello: up=10"
+  },
+  {
+   "ts": 1792728472.3694732,
+   "text": "I (11136) hello: up=11"
+  },
+  {
+   "ts": 1792728473.3695905,
+   "text": "I (12136) hello: up=12"
+  }
+ ]
+}

@@ -5,18 +5,18 @@ tests/target/lcd_fault/ (seam-lcd-fault-injection), variant `init` (lcd_start
 fails with ESP_ERR_TIMEOUT) or `write5` (the 5th write after T1 fails with
 ESP_ERR_INVALID_STATE).
 
-The reset capture lasts 5 s and the write fault lands later, so each run reads
-the bench's /api/serial/output ring buffer, which keeps collecting after the
-reset. P-FAULT: the shipped build is flashed back when the module ends.
+Each run resets once through JTAG and reads the following minute of that same
+boot from the bench ring buffer (conftest.reset_and_follow). P-FAULT: the
+shipped build is flashed back when the module ends.
 """
 
 import os
 import re
-import time
 
 import pytest
 
-from conftest import CHIP, LOG_LINE, flash_coldflash, hello_lines, this_boot, up_values
+from conftest import (CHIP, LOG_LINE, flash_coldflash, hello_lines, reset_and_follow,
+                      this_boot, up_values)
 
 AFTER_FAILURE_S = 62          # FR-5.10 watches 60 s after the failure line
 BOOT_MARKS = ("ESP-ROM:", "rst:", "Guru Meditation", "abort()", "Backtrace:", "Rebooting...")
@@ -27,11 +27,6 @@ def _fault_dir(variant):
     if not d or not os.path.isfile(os.path.join(d, "flash_args")):
         pytest.skip(f"FAULT_DIR_{variant.upper()} not set to the lcdfault-{variant} artefact")
     return d
-
-
-def _ring_since(bench, slot, since):
-    buf = bench.serial_output(slot, lines=2000, since=since)
-    return [e.get("text", "") for e in buf.get("lines", [])]
 
 
 @pytest.fixture(scope="module")
@@ -47,25 +42,25 @@ def restore_shipped(bench, dut, firmware_dir):
 _runs = {}
 
 
-@pytest.fixture(scope="module", params=["init", "write5"])
-def run(request, bench, dut, restore_shipped):
-    """Flash a fault variant, reset, and collect the boot plus the following minute."""
-    variant = request.param
+def _run(bench, dut, variant):
+    """Flash a fault variant, reset once, and collect that boot's first minute+."""
     if variant not in _runs:
-        d = _fault_dir(variant)
-        res = flash_coldflash(bench.base_url, dut, CHIP, d)
+        res = flash_coldflash(bench.base_url, dut, CHIP, _fault_dir(variant))
         assert res.get("ok"), res.get("error") or res.get("output")
-        last = bench.serial_output(dut, lines=1).get("lines") or [{"ts": 0}]
-        bench.serial_reset(dut)
         # The fault lands within ~6 s of reset; then FR-5.10's minute.
-        time.sleep(6 + AFTER_FAILURE_S)
-        lines = this_boot(_ring_since(bench, dut, last[-1]["ts"]))
-        _runs[variant] = {"variant": variant, "lines": lines}
+        _runs[variant] = {"variant": variant,
+                          "lines": reset_and_follow(bench, dut, 6 + AFTER_FAILURE_S)}
     return _runs[variant]
 
 
-def only(variant):
-    return lambda run: run["variant"] == variant or pytest.skip(f"not the {variant} variant")
+@pytest.fixture(scope="module")
+def run_init(bench, dut, restore_shipped):
+    return _run(bench, dut, "init")
+
+
+@pytest.fixture(scope="module")
+def run_write5(bench, dut, restore_shipped):
+    return _run(bench, dut, "write5")
 
 
 def failure(run):
@@ -81,8 +76,8 @@ def _after(run, idx):
 
 
 # TC-HELLO-10 · FR-5.6
-def test_init_failure_enters_degraded_within_3s(run):
-    only("init")(run)
+def test_init_failure_enters_degraded_within_3s(run_init):
+    run = run_init
     _, hits = failure(run)
     assert len(hits) == 1 and hits[0][1], "no `hello: lcd init failed:` line"
     assert int(hits[0][1].group(2)) <= 3000, f"at {hits[0][1].group(2)} ms"
@@ -90,15 +85,15 @@ def test_init_failure_enters_degraded_within_3s(run):
 
 
 # TC-LOG-10 · FR-7.2
-def test_init_failure_line_is_error_level_with_the_error_name(run):
-    only("init")(run)
+def test_init_failure_line_is_error_level_with_the_error_name(run_init):
+    run = run_init
     lines = [(lvl, msg) for lvl, _, msg in hello_lines(run["lines"]) if msg.startswith("lcd init failed")]
     assert lines == [("E", "lcd init failed: ESP_ERR_TIMEOUT")], lines
 
 
 # TC-HELLO-12 · FR-5.7
-def test_degraded_keeps_the_refresh_on_serial(run):
-    only("init")(run)
+def test_degraded_keeps_the_refresh_on_serial(run_init):
+    run = run_init
     _, hits = failure(run)
     ups = up_values(_after(run, hits[0][0]))[:11]
     assert len(ups) == 11, f"only {len(ups)} up= lines after the failure"
@@ -108,8 +103,8 @@ def test_degraded_keeps_the_refresh_on_serial(run):
 
 
 # TC-HELLO-16 · FR-5.9
-def test_degraded_makes_no_display_call(run):
-    only("init")(run)
+def test_degraded_makes_no_display_call(run_init):
+    run = run_init
     _, hits = failure(run)
     idx, fail_ms = hits[0][0], int(hits[0][1].group(2))
     before = [ln for ln in run["lines"][:idx] if "lcdfi: call" in ln]
@@ -121,8 +116,8 @@ def test_degraded_makes_no_display_call(run):
 
 
 # TC-HELLO-14 · FR-5.8
-def test_write_failure_enters_degraded_on_the_same_tick(run):
-    only("write5")(run)
+def test_write_failure_enters_degraded_on_the_same_tick(run_write5):
+    run = run_write5
     assert any("hello: shown" in ln for ln in run["lines"]), "never reached SHOWING"
     _, hits = failure(run)
     assert len(hits) == 1, f"`hello: lcd write failed` {len(hits)} times"
@@ -135,14 +130,16 @@ def test_write_failure_enters_degraded_on_the_same_tick(run):
 
 
 # TC-LOG-11 · FR-7.4
-def test_write_failure_line_is_error_level_with_the_error_name(run):
-    only("write5")(run)
+def test_write_failure_line_is_error_level_with_the_error_name(run_write5):
+    run = run_write5
     lines = [(lvl, msg) for lvl, _, msg in hello_lines(run["lines"]) if msg.startswith("lcd write failed")]
     assert lines == [("E", "lcd write failed: ESP_ERR_INVALID_STATE")], lines
 
 
 # TC-HELLO-17 · FR-5.10 (both variants)
-def test_no_reset_for_a_minute_after_the_failure(run):
+@pytest.mark.parametrize("variant", ["init", "write5"])
+def test_no_reset_for_a_minute_after_the_failure(request, variant):
+    run = request.getfixturevalue(f"run_{variant}")
     _, hits = failure(run)
     assert hits, "no failure line"
     idx, fail_ms = hits[0][0], int(hits[0][1].group(2))

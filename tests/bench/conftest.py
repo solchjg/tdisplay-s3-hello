@@ -102,6 +102,33 @@ def this_boot(output):
     return output[rst[0]:]
 
 
+def reset_and_follow(bench, slot, seconds):
+    """One reset, then `seconds` of the same boot, from the bench ring buffer.
+
+    Uses the JTAG reset (a debug session on the slot's built-in USB-JTAG): the
+    DTR/RTS reset of /api/serial/reset resets a native-USB part a second time
+    when the bench reopens the port (test-plan bench-usb-reset note), which
+    would end the very boot a no-reset window is watching. The bench copies
+    its 5 s boot capture into the ring after the reset returns, as a block of
+    lines sharing one timestamp; that duplicate block is dropped.
+    """
+    bench.debug_start(slot=slot, chip=CHIP)
+    try:
+        mark = (bench.serial_output(slot, lines=1).get("lines") or [{"ts": 0}])[-1]["ts"]
+        res = bench.serial_reset(slot)
+        assert res.get("method", "").lower().startswith("jtag"), f"not a JTAG reset: {res.get('method')}"
+        import time as _time
+        _time.sleep(seconds)
+        ring = bench.serial_output(slot, lines=4000, since=mark).get("lines", [])
+    finally:
+        bench.debug_stop(slot=slot)
+    cap = set(res.get("output") or [])
+    from collections import Counter
+    shared = {ts for ts, n in Counter(e["ts"] for e in ring).items() if n >= 3}
+    lines = [e["text"] for e in ring if not (e["ts"] in shared and e["text"] in cap)]
+    return this_boot(lines)
+
+
 def hello_lines(output):
     """(level, ms, message) for every `hello:` log line in a capture."""
     return [m.groups() for m in (LOG_LINE.match(ln.strip()) for ln in output) if m]
