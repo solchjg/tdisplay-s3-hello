@@ -419,4 +419,4 @@ tests:
     # until 2026-10-23 (an unquoted `Up: <N> s`), and no grep-based check saw it.
     needs: []
     impl: tests/host/test_plan.py::test_plan_is_valid_yaml_with_unique_ids
-    result: {status: not done, reason: never run in CI, commit: null}
+    result: {status: successful, commit: e6530e8, date: 2026-10-23, evidence: "CI host tests + lint, e6530e8"}
