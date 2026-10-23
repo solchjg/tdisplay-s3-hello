@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="308.364" timestamp="2026-10-23T03:42:28.091170+00:00" hostname="claude-code-master"><testcase classname="tests.bench.test_display" name="test_operator_sees_both_lines_legible" time="126.653" /><testcase classname="tests.bench.test_display" name="test_operator_sees_backlight_on" time="51.892" /><testcase classname="tests.bench.test_display" name="test_cold_start_leaves_no_stray_pixels" time="71.564" /><testcase classname="tests.bench.test_journey" name="test_jrn_01_4_operator_sees_greeting" time="31.219" /><testcase classname="tests.bench.test_journey" name="test_jrn_01_6_operator_sees_uptime" time="27.003"><failure message="AssertionError: pressed at 44, log then at 50&#10;assert 50 &lt;= (44 + 2)">bench = &lt;testbench_driver.TestbenchDriver object at 0x72c3fd9a7b60&gt;
+dut = 'SLOT4'
+boot = ['rst:0x15 (USB_UART_CHIP_RESET),boot:0xb (SPI_FAST_FLASH_BOOT)', 'Saved PC:0x4037944a', 'SPIWP:0xee', 'mode:DIO, clock div:2', 'load:0x3fce2820,len:0x1548', 'load:0x403c8700,len:0xd68', ...]
+
+    def test_jrn_01_6_operator_sees_uptime(bench, dut, boot):
+        """The operator presses DONE when line 2 shows a target value; the log decides.
+    
+        A person cannot compare a counter that changes every second against a
+        number to within ±1, so the comparison is the instrument's: at the press,
+        the logged N must be the target within ±1. The first up= line after the
+        press is one refresh later, hence target .. target + 2.
+        """
+        assert any("hello: shown" in ln for ln in boot), "display not up; nothing to show"
+        m = bench.serial_monitor(dut, pattern="hello: up=", timeout=5)
+        target = int(re.search(r"up=(\d+)", m.get("line") or "").group(1)) + 20
+        assert bench.human_interaction(
+            f"JRN-01.6. Watch the second line count up. Press DONE at the moment it reads "
+            f"exactly 'Up: {target} s' (same spelling: 'Up:', the number, a space, 's'). "
+            "If it reads anything else, or you miss it, press CANCEL.", timeout=120)
+        after = bench.serial_monitor(dut, pattern="hello: up=", timeout=3)
+        n = int(re.search(r"up=(\d+)", after.get("line") or "").group(1))
+&gt;       assert target &lt;= n &lt;= target + 2, f"pressed at {target}, log then at {n}"
+E       AssertionError: pressed at 44, log then at 50
+E       assert 50 &lt;= (44 + 2)
+
+tests/bench/test_journey.py:79: AssertionError</failure></testcase></testsuite></testsuites>

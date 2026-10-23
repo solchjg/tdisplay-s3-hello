@@ -171,7 +171,7 @@ tests:
     needs: [bench-flash, dut-tdisplay-s3-slot4]
     observable: flash reports success for every image in flash_args
     impl: tests/bench/test_journey.py::test_jrn_01_1_flash
-    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: JRN-01.2
     title: USB reset reaches the boot marker
@@ -184,7 +184,7 @@ tests:
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     observable: "`Init complete, running event-driven` exactly once on SLOT4 serial"
     impl: tests/bench/test_journey.py::test_jrn_01_2_boot_marker
-    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: JRN-01.3
     title: Display comes up within the boot deadline
@@ -197,7 +197,7 @@ tests:
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: "`hello: shown line1=\"Hello, world!\"` within 3.0 s of the reset command"
     impl: tests/bench/test_journey.py::test_jrn_01_3_display_up
-    result: {status: not done, reason: "xfail (strict): FSD Phase 2 display not implemented", commit: 9248c4f}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: JRN-01.4
     title: Operator sees the greeting upright, white on black
@@ -210,7 +210,7 @@ tests:
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: operator confirms `Hello, world!` on the top line, upright with USB-C on the right, white on black
     impl: tests/bench/test_journey.py::test_jrn_01_4_operator_sees_greeting
-    result: {status: not done, reason: "xfail (strict): FSD Phase 2 display not implemented", commit: 9248c4f}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-operator.junit.xml + bench activity log 03:42-03:47Z (Human confirmed)"}
 
   - id: JRN-01.5
     title: Uptime ticks once per second
@@ -223,7 +223,7 @@ tests:
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     observable: "`hello: up=<N>`, N +1 per line, gaps 900–1100 ms over 10 lines"
     impl: tests/bench/test_journey.py::test_jrn_01_5_uptime_ticks
-    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: JRN-01.6
     title: Operator sees the uptime line match the log
@@ -236,7 +236,9 @@ tests:
     needs: [bench-operator-prompt, operator-at-bench, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: "operator presses DONE when line 2 reads `Up: <target> s`; the next logged N is target .. target+2"
     impl: tests/bench/test_journey.py::test_jrn_01_6_operator_sees_uptime
-    result: {status: not done, reason: "xfail (strict): FSD Phase 2 display not implemented", commit: 9248c4f}
+    # 2026-10-23 03:47Z run at 2cd9769 failed: operator pressed DONE late (operator
+    # confirmed); lead raised from 20 s to 30 s in d2834e1, then green.
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-jrn016-rerun.junit.xml + bench activity log (Human confirmed)"}
 
   - id: TC-TIER-01
     title: Host tier runs (C compiler and pytest available)
@@ -248,7 +250,7 @@ tests:
     # Infrastructure check: proves the tier exists, verifies no requirement.
     needs: []
     impl: tests/host/test_tier.py::test_host_c_compiler_builds_and_runs
-    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI host tests + lint, 9248c4f"}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-BUILD-01
     title: Build targets esp32s3
@@ -260,7 +262,7 @@ tests:
     verifies: [C-10.1]
     needs: []
     impl: tests/host/test_build.py::test_target_is_esp32s3
-    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI Build Firmware run 39894606858 (9248c4f)"}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI Build Firmware 39897249438 (d2834e1)"}
 
   - id: TC-BUILD-02
     title: Build uses ESP-IDF v6.0.2 (app descriptor idf_ver)
@@ -272,7 +274,7 @@ tests:
     verifies: [C-10.2]
     needs: []
     impl: tests/host/test_build.py::test_idf_version_is_v6_0_2
-    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI Build Firmware run 39894606858 (9248c4f)"}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI Build Firmware 39897249438 (d2834e1)"}
 
   - id: TC-BUILD-03
     title: Build states 16 MB flash
@@ -284,7 +286,7 @@ tests:
     verifies: [C-10.3]
     needs: []
     impl: tests/host/test_build.py::test_flash_size_is_stated_16mb
-    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI Build Firmware run 39894606858 (9248c4f)"}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI Build Firmware 39897249438 (d2834e1)"}
 
   - id: TC-BUILD-04
     title: App fits the default single-app 1 MB factory partition
@@ -296,7 +298,7 @@ tests:
     verifies: [C-10.4]
     needs: []
     impl: tests/host/test_build.py::test_app_fits_default_single_app_partition
-    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI Build Firmware run 39894606858 (9248c4f)"}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI Build Firmware 39897249438 (d2834e1)"}
 
   - id: TC-BUILD-05
     title: Board in SLOT4 reads 16 MB flash
@@ -308,7 +310,7 @@ tests:
     verifies: [C-10.3]
     needs: [dut-tdisplay-s3-slot4]
     impl: tests/bench/test_board.py::test_board_flash_is_16mb
-    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: TC-SEC-01
     title: No WiFi or BT init symbol linked
@@ -321,7 +323,7 @@ tests:
     needs: []
     # Non-adversarial static check of the profile's one protection; adversarial security is Wave 3.
     impl: tests/host/test_build.py::test_no_radio_initialisation_linked
-    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI Build Firmware run 39894606858 (9248c4f)"}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI Build Firmware 39897249438 (d2834e1)"}
 
   - id: TC-SEC-02
     title: DUT does not advertise on BLE
@@ -333,7 +335,7 @@ tests:
     verifies: [FR-9.1]
     needs: [bench-ble-scan, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_board.py::test_dut_does_not_advertise_on_ble
-    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: TC-SEC-03
     title: DUT runs no WiFi AP (scan by BSSID)
@@ -357,7 +359,7 @@ tests:
     verifies: [FR-7.3]
     needs: []
     impl: tests/host/test_hello_log.py::test_up_line_format
-    result: {status: successful, commit: 9248c4f, date: 2026-10-23, evidence: "CI host tests + lint, 9248c4f"}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-LOG-02
     title: "Every hello: line carries the ms timestamp prefix"
@@ -369,7 +371,7 @@ tests:
     verifies: [FR-7.5]
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_heartbeat.py::test_every_hello_line_has_the_timestamp_prefix
-    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: TC-LOG-03
     title: One up= line per refresh, no extra text
@@ -382,7 +384,7 @@ tests:
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     # The contract's drawn-value match (with FR-5.3) is Phase 2 and joins this test then.
     impl: tests/bench/test_heartbeat.py::test_one_up_line_per_refresh
-    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: TC-HELLO-01
     title: Refresh every 1000 ± 100 ms; 60 refreshes span 60 ± 1 s wall
@@ -394,7 +396,7 @@ tests:
     verifies: [FR-5.4]
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_heartbeat.py::test_refresh_period
-    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: TC-HELLO-02
     title: N steps by exactly 1 and stays within 1 of the log clock
@@ -406,7 +408,7 @@ tests:
     verifies: [FR-5.5]
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_heartbeat.py::test_uptime_steps_by_one_and_tracks_the_clock
-    result: {status: successful, commit: 9248c4f, firmware: 0.0.0-41110fb, date: 2026-10-23, evidence: testing/evidence/runs/bench-fw41110fb.junit.xml}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: TC-TIER-02
     title: Test plan parses as YAML with unique ids
@@ -419,7 +421,7 @@ tests:
     # until 2026-10-23 (an unquoted `Up: <N> s`), and no grep-based check saw it.
     needs: []
     impl: tests/host/test_plan.py::test_plan_is_valid_yaml_with_unique_ids
-    result: {status: successful, commit: e6530e8, date: 2026-10-23, evidence: "CI host tests + lint, e6530e8"}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-HELLO-03
     title: "Line 2 format core: Up: 0 s ... Up: 4294967295 s"
@@ -431,7 +433,7 @@ tests:
     verifies: [FR-5.3]
     needs: []
     impl: tests/host/test_hello_logic.py::test_line2_format
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-HELLO-04
     title: "Line 1 text is exactly Hello, world!"
@@ -443,7 +445,7 @@ tests:
     verifies: [FR-5.1]
     needs: []
     impl: tests/host/test_hello_logic.py::test_line1_text
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-HELLO-05
     title: "T1: BOOT, init ok -> SHOWING, backlight on, log shown"
@@ -455,7 +457,7 @@ tests:
     verifies: [FR-5.2]
     needs: []
     impl: tests/host/test_hello_logic.py::test_t1_boot_init_ok_enters_showing
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-HELLO-06
     title: "T3: SHOWING, tick, write ok -> SHOWING, redraw, log up"
@@ -467,7 +469,7 @@ tests:
     verifies: [FR-5.4]
     needs: []
     impl: tests/host/test_hello_logic.py::test_t3_showing_tick_ok_stays_and_logs
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-LCD-01
     title: "LCD configuration states the FSD pins, clock and offset"
@@ -479,7 +481,7 @@ tests:
     verifies: [C-6.1, C-6.2, C-6.3, C-6.4, C-6.5]
     needs: []
     impl: tests/host/test_lcd_text.py::test_configuration_states_the_fsd_values
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-LCD-02
     title: "Font is fixed-width 16 x 32, ASCII 0x20-0x7E"
@@ -491,7 +493,7 @@ tests:
     verifies: [FR-6.2]
     needs: []
     impl: tests/host/test_lcd_text.py::test_font_is_fixed_16x32
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-LCD-03
     title: "Lines stacked without overlap inside 320 x 170"
@@ -503,7 +505,7 @@ tests:
     verifies: [FR-6.5]
     needs: []
     impl: tests/host/test_lcd_text.py::test_lines_are_stacked_inside_the_visible_area
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-LCD-04
     title: "Longest line 2 fits one row within 320 px"
@@ -515,7 +517,7 @@ tests:
     verifies: [FR-6.6]
     needs: []
     impl: tests/host/test_lcd_text.py::test_longest_line2_fits_on_one_row
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-LCD-05
     title: "Operator: both lines legible (pin map, clock, offset on the wire)"
@@ -527,7 +529,7 @@ tests:
     verifies: [C-6.1, C-6.2, C-6.3, C-6.4, C-6.5]
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     impl: tests/bench/test_display.py::test_operator_sees_both_lines_legible
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-operator.junit.xml + bench activity log 03:42-03:47Z (Human confirmed)"}
 
   - id: TC-LCD-06
     title: "Cold start (USB-C power cycle): no stray pixels"
@@ -539,7 +541,7 @@ tests:
     verifies: [FR-6.4]
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     impl: tests/bench/test_display.py::test_cold_start_leaves_no_stray_pixels
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-operator.junit.xml + bench activity log 03:42-03:47Z (Human confirmed)"}
 
   - id: TC-LCD-07
     title: "Operator: backlight on in SHOWING"
@@ -551,7 +553,7 @@ tests:
     verifies: [FR-6.7]
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     impl: tests/bench/test_display.py::test_operator_sees_backlight_on
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-operator.junit.xml + bench activity log 03:42-03:47Z (Human confirmed)"}
 
   - id: TC-LOG-04
     title: "hello: shown logged exactly once per boot"
@@ -563,7 +565,7 @@ tests:
     verifies: [FR-7.1]
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
     impl: tests/bench/test_display.py::test_shown_logged_once_per_boot
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw2cd9769-auto2.junit.xml"}
 
   - id: TC-LOG-05
     title: "Shown-line format core"
@@ -575,7 +577,7 @@ tests:
     verifies: [FR-7.1]
     needs: []
     impl: tests/host/test_hello_log.py::test_shown_line_format
-    result: {status: not done, reason: not run yet, commit: null}
+    result: {status: successful, commit: d2834e1, firmware: 0.0.0-2cd9769, date: 2026-10-23, evidence: "CI host tests + lint 39897249482 (d2834e1)"}
 
   - id: TC-HELLO-10
     title: "T2: init fails -> DEGRADED within 3 s of reset, no reset"

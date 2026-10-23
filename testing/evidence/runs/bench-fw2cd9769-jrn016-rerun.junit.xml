@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="58.466" timestamp="2026-10-23T03:48:20.039120+00:00" hostname="claude-code-master"><testcase classname="tests.bench.test_journey" name="test_jrn_01_6_operator_sees_uptime" time="58.441" /></testsuite></testsuites>
