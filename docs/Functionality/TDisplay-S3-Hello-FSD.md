@@ -167,6 +167,7 @@ Source layout and dependency rules that implement this layering are HOW:
 | R-3 | The boot deadline (FR-5.2, FR-5.6) is read from the device's own log timestamp, which counts from the chip's reset, not from the bench's reset command; the latency between command and chip reset is not included | Certain | Low | Accepted: the bench cannot timestamp a reset capture. The device clock is the only clock that sees both the reset and the line |
 | R-4 | Wrong mirror, colour-inversion or offset settings produce a mirrored, colour-inverted or shifted image, which every serial-only test misses | Medium | Medium | Operator checks FR-6.1, FR-6.3 and FR-6.4 each name the specific defect to look for |
 | R-5 | SLOT4 is also the bound slot of `esp32-oled-hello`; only one of the two projects can be tested at a time | Certain | Low | Commissioning confirms the board in SLOT4 is the T-Display-S3 before any test (P-RESET precondition) |
+| R-6 | The WiFi half of FR-9.1's air check sees only an AP with the default SSID; an AP whose SSID the firmware configures is invisible to it, because the bench's WiFi scan reports no BSSID (SensorsIot/Embedded-AI-Harness#50) | Certain | Low | The host-tier check (no `esp_wifi_init` linked) excludes any AP, configured or not; the air check is the second line. Return to matching the DUT's MAC once the scan reports BSSIDs |
 
 ### 4.2 Assumptions
 
@@ -514,7 +515,8 @@ zero.
 | ID | Precondition · stimulus | Expected observation | Must NOT happen | Tier |
 |----|------------------------|----------------------|-----------------|------|
 | FR-9.1 | Inspect the linked ELF | No `esp_wifi_init` and no `esp_bt_controller_init` symbol | Either symbol present | host |
-| FR-9.1 (air) | Device running; bench WiFi scan and BLE scan | No AP and no advertiser with the DUT's MAC | DUT MAC seen | bench |
+| FR-9.1 (air, BLE) | Device running; bench BLE scan | No advertiser whose address is the DUT's base MAC + 0 … + 3 | Such an advertiser seen | bench |
+| FR-9.1 (air, WiFi) | Device running; bench WiFi scan | No network whose SSID is `ESP_` followed by the last three bytes, in upper-case hex, of the DUT's base MAC + 0 … + 3 (the SSID of a default-configured ESP32 SoftAP) | Such an SSID seen | bench |
 
 ---
 
@@ -608,7 +610,7 @@ All configuration is build-time; nothing is changeable at runtime and nothing pe
 
 ```yaml
 document_status: draft
-fsd_version: 0.1.1
+fsd_version: 0.1.2
 repository: https://github.com/solchjg/tdisplay-s3-hello
 baseline_commit: (initial commit of this document)
 applicable_firmware_version: none yet
@@ -620,6 +622,7 @@ last_updated: 2026-10-23
 change_history:
   - 0.1.0 2026-10-23 initial definition
   - 0.1.1 2026-10-23 FR-5.2 / FR-5.6 contracts timed by the device log timestamp (spec-defect finding from /build); R-3 restated
+  - 0.1.2 2026-10-23 FR-9.1 air contract split; WiFi half matches the default SoftAP SSID (bench scan has no BSSID, user decision); R-6 added
 superseded_requirements: []
 open_decisions: []
 related_test_baseline: none yet
