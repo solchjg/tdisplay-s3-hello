@@ -51,7 +51,9 @@ def test_cold_start_leaves_no_stray_pixels(bench, dut, flashed):
     deadline = time.monotonic() + 30
     while time.monotonic() < deadline:
         slot = bench.get_slot(dut)
-        if slot.get("present") and slot.get("state") in ("idle", "running"):
+        # Present is not enough: the serial proxy comes up seconds after the
+        # USB add, and a monitor before that fails with "proxy not running".
+        if slot.get("present") and slot.get("running"):
             break
         time.sleep(1)
     else:
