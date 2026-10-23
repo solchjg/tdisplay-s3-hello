@@ -100,3 +100,30 @@ def test_t3_showing_tick_ok_stays_and_logs(run):
     assert nxt == "SHOWING"
     assert int(acts) == actions(run, "LOG_UP")
     assert draws == "1", "SHOWING must redraw line 2 on each tick"
+
+
+# ── Wave 3: fault transitions (negative) ───────────────────────────────────
+
+# TC-HELLO-11 · T2 (FR-5.6)
+def test_t2_boot_init_failed_enters_degraded_without_retry(run):
+    nxt, acts, _ = run("step", "BOOT", "init", 0).split()
+    assert nxt == "DEGRADED"
+    assert int(acts) == actions(run, "LOG_INIT_FAILED"), "T2 logs the failure and nothing else"
+
+
+# TC-HELLO-13 · T4 (FR-5.8)
+def test_t4_showing_write_failed_enters_degraded_logging_up_first(run):
+    nxt, acts, _ = run("step", "SHOWING", "tick", 0).split()
+    assert nxt == "DEGRADED"
+    assert int(acts) == actions(run, "LOG_UP", "LOG_WRITE_FAILED")
+    # Execution order is bit order (hello_logic.h); the up line must come first.
+    assert actions(run, "LOG_UP") < actions(run, "LOG_WRITE_FAILED")
+
+
+# TC-HELLO-15 · T5 (FR-5.9)
+def test_t5_degraded_never_touches_the_display(run):
+    for _ in range(100):
+        nxt, acts, draws = run("step", "DEGRADED", "tick", 1).split()
+        assert (nxt, int(acts), draws) == ("DEGRADED", actions(run, "LOG_UP"), "0")
+    assert run("step", "DEGRADED", "tick", 0).split()[:2] == ["DEGRADED", str(actions(run, "LOG_UP"))], \
+        "a failed guard in DEGRADED must not change anything either"

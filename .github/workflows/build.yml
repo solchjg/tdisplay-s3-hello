@@ -102,6 +102,44 @@ jobs:
             sdkconfig.generated
             coldflash/
 
+  # Fault-injection test builds (FSD §5.5): test artefacts for Wave 3's
+  # negative tests. `release` never downloads them.
+  lcd-fault:
+    runs-on: ubuntu-latest
+    container: espressif/idf:v6.0.2
+    strategy:
+      matrix:
+        variant: [init, write5]
+    defaults:
+      run:
+        shell: bash
+        working-directory: tests/target/lcd_fault
+    steps:
+      - name: Trust the workspace
+        working-directory: /
+        run: git config --global --add safe.directory '*'
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          . $IDF_PATH/export.sh >/dev/null
+          ARGS="-B build -DSDKCONFIG=$PWD/build/sdkconfig \
+                -DSDKCONFIG_DEFAULTS=$GITHUB_WORKSPACE/sdkconfig.defaults;$PWD/sdkconfig.${{ matrix.variant }}"
+          idf.py $ARGS set-target esp32s3
+          idf.py $ARGS build
+          grep -E 'CONFIG_LCD_FAULT_' build/sdkconfig
+      - name: Collect flash set from flash_args
+        run: |
+          mkdir -p out
+          cp build/flash_args out/
+          awk '$1 ~ /^0x/ {print $2}' build/flash_args | while read -r f; do
+            cp "build/$f" out/ || { echo "FATAL: missing build/$f"; exit 1; }
+          done
+          cat out/flash_args
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lcdfault-${{ matrix.variant }}
+          path: tests/target/lcd_fault/out/
+
   verify:
     needs: build
     if: startsWith(github.ref, 'refs/tags/')
