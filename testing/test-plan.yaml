@@ -87,7 +87,11 @@ capabilities:
       bootloader 0d9a5c9b…097f, partition-table 7f00b6c0…c820, tdisplay_hello
       a4ab669d…fee). The boot capture of the bench serial reset at 03:03:25Z
       shows `App version: 0.0.0-1de3851` and
-      `I (135) main: Init complete, running event-driven`.
+      `I (135) main: Init complete, running event-driven`. The raw, unedited
+      /api/serial/reset response is committed as
+      testing/evidence/commissioning-2026-10-23/slot4-serial-reset-0303Z.json
+      (the bench log keeps only "serial.reset(SLOT4) — done").
+      The monitor attempt it replaced is slot4-monitor-cut-by-reset-0302Z.json.
       Aid hashes (run 39891554233): forward_path.bin c1cdbb64…, lcd_probe.bin 3678fdbf….
       Board identity as a T-Display-S3 (not only an ESP32-S3) is shown by
       `lcd-st7789`: its built-in panel answers on the T-Display-S3 pin map.
