@@ -1,7 +1,7 @@
 # Toolchain + bench tier + GitHub Actions runner, one container per project.
 FROM espressif/idf:v6.0.2
 
-ARG RUNNER_VERSION=2.321.0
+ARG RUNNER_VERSION=2.338.0
 # Harness commit the TestbenchDriver is taken from (pinned, not a branch).
 ARG HARNESS_COMMIT=db6a093
 
