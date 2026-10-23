@@ -107,5 +107,7 @@ def test_app_fits_default_single_app_partition(sdkconfig, app_bin):
 
 # TC-SEC-01 · FR-9.1
 def test_no_radio_initialisation_linked(app_elf):
-    linked = _defined_symbols(app_elf) & {"esp_wifi_init", "esp_bt_controller_init"}
+    symbols = _defined_symbols(app_elf)
+    assert "app_main" in symbols, "symbol table not read (positive control)"
+    linked = symbols & {"esp_wifi_init", "esp_bt_controller_init"}
     assert not linked, f"radio init linked: {sorted(linked)}"
