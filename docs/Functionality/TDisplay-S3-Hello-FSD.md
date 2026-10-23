@@ -609,7 +609,7 @@ All configuration is build-time; nothing is changeable at runtime and nothing pe
 ```yaml
 document_status: draft
 fsd_version: 0.1.0
-repository: local only (/home/sadmin/tdisplay-s3-hello); no remote yet
+repository: https://github.com/solchjg/tdisplay-s3-hello
 baseline_commit: (initial commit of this document)
 applicable_firmware_version: none yet
 author: solchjg

@@ -1,0 +1,167 @@
+# Test plan — every test, what it verifies, what it needs, what it last produced.
+# Owned by /build. Contract: docs/Functionality/TDisplay-S3-Hello-FSD.md
+#
+# Status values: not done | successful | failed — written by whatever ran the
+# test, never by hand, always with the commit. Blocked is computed from
+# `needs` against `capabilities`; never typed.
+
+project: tdisplay-s3-hello
+fsd: docs/Functionality/TDisplay-S3-Hello-FSD.md
+dut:
+  board: LilyGO T-Display-S3 (non-touch, 16 MB flash, 8 MB PSRAM)
+  chip: esp32s3
+  slot: SLOT4
+  serial: rfc2217://192.168.2.230:4004
+testbench:
+  url: http://192.168.2.230:8080
+  record:   # dated observation (memory); tests select the bench by identity
+    observed: 2026-10-23
+    hostname: testbench-0441
+    last_seen_ip: 192.168.2.230
+
+# ── Capabilities ─────────────────────────────────────────────────────────
+# Bench capabilities: `yes` as the bench declares them (Harness FSD); a
+# project never proves the bench. Project-side equipment: `unproven` until
+# /commission observes it working here — each one is a debugging-agenda item.
+capabilities:
+  bench-flash:
+    what: Flash an image set to SLOT4 over USB (Harness /api/flash)
+    available: yes
+  bench-serial-monitor:
+    what: Read SLOT4 serial with pattern wait, DTR/RTS held low (Harness serial monitor)
+    available: yes
+    # Usage note carried from esp32-oled-hello: a `^`-anchored pattern did not
+    # match lines the monitor itself returned; use unanchored patterns.
+  bench-usb-reset:
+    what: Reset the DUT in SLOT4 over USB-Serial/JTAG (Harness serial reset)
+    available: yes
+  bench-operator-prompt:
+    what: Blocking operator prompt with yes/no answer and timestamp (Harness human interaction)
+    available: yes
+  bench-test-progress:
+    what: Live test-session progress on the bench web UI
+    available: yes
+  bench-wifi-scan:
+    what: WiFi scan from the bench radio (for FR-9.1 air check)
+    available: yes
+  bench-ble-scan:
+    what: BLE scan from the bench (for FR-9.1 air check)
+    available: yes
+  slot4-gpio-reset:
+    what: EN/BOOT reset and download mode via bench GPIO on SLOT4
+    available: no
+    # Bench reports gpio_wired=false for SLOT4 (EN pulse produced no reset).
+    # Consequence: no GPIO recovery of a crash-looping or wedged DUT; recovery
+    # is USB reset, or an operator holding BOOT (GPIO 0) while replugging USB-C.
+  release-verification:
+    what: Tag-triggered journey run against the released artifact
+    available: yes
+    # The devcontainer runs 24/7; the bench may not. An absent bench at
+    # verify time is an unmet precondition (not done), never a failure.
+  dut-tdisplay-s3-slot4:
+    what: The board in SLOT4 is a T-Display-S3 with 16 MB flash; a CI-built image flashes over USB and its log reaches SLOT4's monitor
+    available: unproven
+  lcd-st7789:
+    what: The built-in ST7789 lights correctly with the FSD §2.2 pin map, GPIO 15 power, GPIO 38 backlight, 10 MHz i80 clock and offset 35
+    available: unproven
+  operator-at-bench:
+    what: A person at the bench answers operator prompts and can see the T-Display-S3 panel, held USB-C to the right
+    available: unproven
+
+# ── Gate verdicts ────────────────────────────────────────────────────────
+gates: []
+
+# ── Tests ────────────────────────────────────────────────────────────────
+# JRN-01 is the standard run (workflow shape: ordered, one test per step).
+# It is the gate every hardware session runs behind. Steps 3, 4 and 6 need
+# FSD Phase 2 firmware; against Phase 1 firmware the journey stops at step 3.
+tests:
+  - id: JRN-01.1
+    title: Flash the firmware to SLOT4 over USB
+    shape: workflow
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: bench
+    verifies: [C-10.5]
+    needs: [bench-flash, dut-tdisplay-s3-slot4]
+    observable: flash reports success for every image in flash_args
+    impl: ""
+    result: {status: not done, reason: test not written, commit: null}
+
+  - id: JRN-01.2
+    title: USB reset reaches the boot marker
+    shape: workflow
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: bench
+    verifies: [FR-7.6, C-10.5]
+    needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    observable: "`Init complete, running event-driven` exactly once on SLOT4 serial"
+    impl: ""
+    result: {status: not done, reason: test not written, commit: null}
+
+  - id: JRN-01.3
+    title: Display comes up within the boot deadline
+    shape: workflow
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: bench
+    verifies: [FR-5.2, FR-7.1]
+    needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
+    observable: "`hello: shown line1=\"Hello, world!\"` within 3.0 s of the reset command"
+    impl: ""
+    result: {status: not done, reason: test not written, commit: null}
+
+  - id: JRN-01.4
+    title: Operator sees the greeting upright, white on black
+    shape: workflow
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: bench
+    verifies: [FR-5.1, FR-6.1, FR-6.3]
+    needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
+    observable: operator confirms `Hello, world!` on the top line, upright with USB-C on the right, white on black
+    impl: ""
+    result: {status: not done, reason: test not written, commit: null}
+
+  - id: JRN-01.5
+    title: Uptime ticks once per second
+    shape: workflow
+    kind: standard
+    wave: 1
+    fsd_phase: 1
+    tier: bench
+    verifies: [FR-5.4, FR-5.5, FR-7.3]
+    needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
+    observable: "`hello: up=<N>`, N +1 per line, gaps 900–1100 ms over 10 lines"
+    impl: ""
+    result: {status: not done, reason: test not written, commit: null}
+
+  - id: JRN-01.6
+    title: Operator sees the uptime line match the log
+    shape: workflow
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: bench
+    verifies: [FR-5.3]
+    needs: [bench-operator-prompt, operator-at-bench, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
+    observable: operator confirms line 2 reads `Up: <N> s`, N within ±1 of the latest log line
+    impl: ""
+    result: {status: not done, reason: test not written, commit: null}
+
+  - id: TC-TIER-01
+    title: Host tier runs (C compiler and pytest available)
+    shape: atomic
+    kind: standard
+    wave: 1
+    tier: host
+    verifies: []
+    # Infrastructure check: proves the tier exists, verifies no requirement.
+    needs: []
+    impl: tests/host/test_tier.py::test_host_c_compiler_builds_and_runs
+    result: {status: not done, reason: never run, commit: null}
