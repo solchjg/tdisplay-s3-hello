@@ -8,7 +8,7 @@ import time
 
 import pytest
 
-from conftest import hello_lines
+from conftest import hello_lines, this_boot
 
 HOLD = "Hold the T-Display-S3 in landscape with its USB-C connector on your RIGHT."
 
@@ -16,7 +16,7 @@ HOLD = "Hold the T-Display-S3 in landscape with its USB-C connector on your RIGH
 @pytest.fixture(scope="module")
 def showing(bench, dut, flashed):
     """A fresh boot in SHOWING; its capture is returned."""
-    boot = bench.serial_reset(dut).get("output") or []
+    boot = this_boot(bench.serial_reset(dut).get("output") or [])
     if not any(msg.startswith("shown ") for _, _, msg in hello_lines(boot)):
         pytest.fail("display not up after reset: no `hello: shown`")
     return boot

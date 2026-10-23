@@ -7,7 +7,7 @@ import re
 
 import pytest
 
-from conftest import hello_lines, up_values
+from conftest import hello_lines, this_boot, up_values
 
 pytestmark = pytest.mark.journey
 
@@ -18,7 +18,7 @@ MARKER = "Init complete, running event-driven"
 def boot(bench, dut, flashed):
     """Boot capture of one USB reset. A monitor cannot span a bench reset
     (test-plan bench-serial-monitor note), so the reset's own capture is read."""
-    return bench.serial_reset(dut).get("output") or []
+    return this_boot(bench.serial_reset(dut).get("output") or [])
 
 
 def test_jrn_01_1_flash(flashed):
@@ -69,7 +69,7 @@ def test_jrn_01_6_operator_sees_uptime(bench, dut, boot):
     """
     assert any("hello: shown" in ln for ln in boot), "display not up; nothing to show"
     m = bench.serial_monitor(dut, pattern="hello: up=", timeout=5)
-    target = int(re.search(r"up=(\d+)", m.get("line") or "").group(1)) + 20
+    target = int(re.search(r"up=(\d+)", m.get("line") or "").group(1)) + 30
     assert bench.human_interaction(
         f"JRN-01.6. Watch the second line count up. Press DONE at the moment it reads "
         f"exactly 'Up: {target} s' (same spelling: 'Up:', the number, a space, 's'). "

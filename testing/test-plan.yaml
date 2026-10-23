@@ -232,9 +232,9 @@ tests:
     wave: 1
     fsd_phase: 2
     tier: bench
-    verifies: [FR-5.3]
+    verifies: [FR-5.3, FR-7.3]
     needs: [bench-operator-prompt, operator-at-bench, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
-    observable: "operator confirms line 2 reads `Up: <N> s`, N within ±1 of the latest log line"
+    observable: "operator presses DONE when line 2 reads `Up: <target> s`; the next logged N is target .. target+2"
     impl: tests/bench/test_journey.py::test_jrn_01_6_operator_sees_uptime
     result: {status: not done, reason: "xfail (strict): FSD Phase 2 display not implemented", commit: 9248c4f}
 
@@ -420,3 +420,279 @@ tests:
     needs: []
     impl: tests/host/test_plan.py::test_plan_is_valid_yaml_with_unique_ids
     result: {status: successful, commit: e6530e8, date: 2026-10-23, evidence: "CI host tests + lint, e6530e8"}
+
+  - id: TC-HELLO-03
+    title: "Line 2 format core: Up: 0 s ... Up: 4294967295 s"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-5.3]
+    needs: []
+    impl: tests/host/test_hello_logic.py::test_line2_format
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-HELLO-04
+    title: "Line 1 text is exactly Hello, world!"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-5.1]
+    needs: []
+    impl: tests/host/test_hello_logic.py::test_line1_text
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-HELLO-05
+    title: "T1: BOOT, init ok -> SHOWING, backlight on, log shown"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-5.2]
+    needs: []
+    impl: tests/host/test_hello_logic.py::test_t1_boot_init_ok_enters_showing
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-HELLO-06
+    title: "T3: SHOWING, tick, write ok -> SHOWING, redraw, log up"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-5.4]
+    needs: []
+    impl: tests/host/test_hello_logic.py::test_t3_showing_tick_ok_stays_and_logs
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-LCD-01
+    title: "LCD configuration states the FSD pins, clock and offset"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: host
+    verifies: [C-6.1, C-6.2, C-6.3, C-6.4, C-6.5]
+    needs: []
+    impl: tests/host/test_lcd_text.py::test_configuration_states_the_fsd_values
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-LCD-02
+    title: "Font is fixed-width 16 x 32, ASCII 0x20-0x7E"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-6.2]
+    needs: []
+    impl: tests/host/test_lcd_text.py::test_font_is_fixed_16x32
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-LCD-03
+    title: "Lines stacked without overlap inside 320 x 170"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-6.5]
+    needs: []
+    impl: tests/host/test_lcd_text.py::test_lines_are_stacked_inside_the_visible_area
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-LCD-04
+    title: "Longest line 2 fits one row within 320 px"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-6.6]
+    needs: []
+    impl: tests/host/test_lcd_text.py::test_longest_line2_fits_on_one_row
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-LCD-05
+    title: "Operator: both lines legible (pin map, clock, offset on the wire)"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: bench
+    verifies: [C-6.1, C-6.2, C-6.3, C-6.4, C-6.5]
+    needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
+    impl: tests/bench/test_display.py::test_operator_sees_both_lines_legible
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-LCD-06
+    title: "Cold start (USB-C power cycle): no stray pixels"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: bench
+    verifies: [FR-6.4]
+    needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
+    impl: tests/bench/test_display.py::test_cold_start_leaves_no_stray_pixels
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-LCD-07
+    title: "Operator: backlight on in SHOWING"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: bench
+    verifies: [FR-6.7]
+    needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
+    impl: tests/bench/test_display.py::test_operator_sees_backlight_on
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-LOG-04
+    title: "hello: shown logged exactly once per boot"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: bench
+    verifies: [FR-7.1]
+    needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
+    impl: tests/bench/test_display.py::test_shown_logged_once_per_boot
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-LOG-05
+    title: "Shown-line format core"
+    shape: atomic
+    kind: standard
+    wave: 1
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-7.1]
+    needs: []
+    impl: tests/host/test_hello_log.py::test_shown_line_format
+    result: {status: not done, reason: not run yet, commit: null}
+
+  - id: TC-HELLO-10
+    title: "T2: init fails -> DEGRADED within 3 s of reset, no reset"
+    shape: atomic
+    kind: negative
+    wave: 3
+    fsd_phase: 2
+    tier: target
+    verifies: [FR-5.6]
+    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    impl: ""
+    result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
+
+  - id: TC-HELLO-11
+    title: "T2 core: BOOT, init failed -> DEGRADED, log init failure, no retry"
+    shape: atomic
+    kind: negative
+    wave: 3
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-5.6]
+    needs: []
+    impl: ""
+    result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
+
+  - id: TC-HELLO-12
+    title: "DEGRADED keeps the 1 s refresh on serial"
+    shape: atomic
+    kind: negative
+    wave: 3
+    fsd_phase: 2
+    tier: target
+    verifies: [FR-5.7]
+    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    impl: ""
+    result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
+
+  - id: TC-HELLO-13
+    title: "T4 core: SHOWING, tick, write failed -> DEGRADED, log up then failure"
+    shape: atomic
+    kind: negative
+    wave: 3
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-5.8]
+    needs: []
+    impl: ""
+    result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
+
+  - id: TC-HELLO-14
+    title: "Write fails at runtime -> DEGRADED on the same tick, no reset"
+    shape: atomic
+    kind: negative
+    wave: 3
+    fsd_phase: 2
+    tier: target
+    verifies: [FR-5.8]
+    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    impl: ""
+    result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
+
+  - id: TC-HELLO-15
+    title: "T5 core: DEGRADED makes no display call over 100 ticks"
+    shape: atomic
+    kind: negative
+    wave: 3
+    fsd_phase: 2
+    tier: host
+    verifies: [FR-5.9]
+    needs: []
+    impl: ""
+    result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
+
+  - id: TC-HELLO-16
+    title: "DEGRADED: no display call after the failure (lcdfi: call count)"
+    shape: atomic
+    kind: negative
+    wave: 3
+    fsd_phase: 2
+    tier: target
+    verifies: [FR-5.9]
+    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    impl: ""
+    result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
+
+  - id: TC-HELLO-17
+    title: "No reset for 60 s after an init or a write failure"
+    shape: atomic
+    kind: negative
+    wave: 3
+    fsd_phase: 2
+    tier: target
+    verifies: [FR-5.10]
+    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    impl: ""
+    result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
+
+  - id: TC-LOG-10
+    title: "lcd init failed: ESP_ERR_TIMEOUT at level E, once"
+    shape: atomic
+    kind: negative
+    wave: 3
+    fsd_phase: 2
+    tier: target
+    verifies: [FR-7.2]
+    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    impl: ""
+    result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}
+
+  - id: TC-LOG-11
+    title: "lcd write failed: ESP_ERR_INVALID_STATE at level E, once"
+    shape: atomic
+    kind: negative
+    wave: 3
+    fsd_phase: 2
+    tier: target
+    verifies: [FR-7.4]
+    needs: [seam-lcd-fault-injection, bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
+    impl: ""
+    result: {status: not done, reason: "Wave 3: not written (authoring locked)", commit: null}

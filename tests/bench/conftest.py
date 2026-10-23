@@ -89,6 +89,19 @@ def flashed(bench, dut, firmware_dir):
     return flash_coldflash(bench.base_url, dut, CHIP, firmware_dir)
 
 
+def this_boot(output):
+    """The lines of the one boot a reset capture contains.
+
+    A capture can start with bytes from an earlier boot, flushed from the
+    USB-Serial/JTAG FIFO when the bench opens the port (seen 2026-10-23 on fw
+    0.0.0-2cd9769). Exactly one reset-reason line is required, so a second boot
+    inside the capture fails here rather than hiding in the slice.
+    """
+    rst = [i for i, ln in enumerate(output) if ln.startswith("rst:")]
+    assert len(rst) == 1, f"{len(rst)} reset-reason lines in one capture"
+    return output[rst[0]:]
+
+
 def hello_lines(output):
     """(level, ms, message) for every `hello:` log line in a capture."""
     return [m.groups() for m in (LOG_LINE.match(ln.strip()) for ln in output) if m]
