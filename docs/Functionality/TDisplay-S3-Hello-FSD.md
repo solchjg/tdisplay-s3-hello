@@ -164,7 +164,7 @@ Source layout and dependency rules that implement this layering are HOW:
 |----|------|-----------|--------|------------|
 | R-1 | The serial mirror proves what the firmware *intended* to draw, not what the panel shows | Certain | Medium | Display content is confirmed by an operator (FR-5.1, FR-5.3, FR-6.1, FR-6.3 – FR-6.5) |
 | R-2 | The i80 bus is write-only, so a real panel fault is invisible to the firmware; the degraded path can be exercised only by injecting a driver error | Certain | Low | Degraded behaviour is verified on a fault-injection test build (§5.5); real-hardware display faults are out of scope (§4.3) |
-| R-3 | Native-USB re-enumeration after reset adds latency to bench timing of FR-5.2 | Medium | Low | The test errs conservative: it can fail a compliant device, never pass a non-compliant one. A false fail returns as a spec-defect finding |
+| R-3 | The boot deadline (FR-5.2, FR-5.6) is read from the device's own log timestamp, which counts from the chip's reset, not from the bench's reset command; the latency between command and chip reset is not included | Certain | Low | Accepted: the bench cannot timestamp a reset capture. The device clock is the only clock that sees both the reset and the line |
 | R-4 | Wrong mirror, colour-inversion or offset settings produce a mirrored, colour-inverted or shifted image, which every serial-only test misses | Medium | Medium | Operator checks FR-6.1, FR-6.3 and FR-6.4 each name the specific defect to look for |
 | R-5 | SLOT4 is also the bound slot of `esp32-oled-hello`; only one of the two projects can be tested at a time | Certain | Low | Commissioning confirms the board in SLOT4 is the T-Display-S3 before any test (P-RESET precondition) |
 
@@ -269,12 +269,12 @@ Compact form:
 | ID | Precondition · stimulus | Expected observation | Must NOT happen | Timing | Tier |
 |----|------------------------|----------------------|-----------------|--------|------|
 | FR-5.1 | Shipped build; reset SLOT4; operator prompted | Operator confirms `Hello, world!` on the top line, spelled exactly | Text truncated, misspelled, mirrored or upside-down; operator not asked | n/a | bench (operator) |
-| FR-5.2 | Shipped build; bench issues USB reset | `hello: shown` arrives on the bench serial monitor | `hello: lcd init failed` before `hello: shown`; a second boot banner | ≤ 3.0 s from the reset command (bench wall clock) | bench |
+| FR-5.2 | Shipped build; bench issues USB reset | `hello: shown` in the boot the reset caused (after its reset-reason line) | `hello: lcd init failed` before `hello: shown`; a second boot banner | The line's ESP-IDF log timestamp ≤ 3000 ms | bench |
 | FR-5.3 | In SHOWING; operator prompted after the latest `hello: up=<N>` | Operator confirms line 2 reads `Up: <N> s` with N within ±1 of the logged value | Leading zeros; unit missing; stale digits left from a previous value | n/a | bench (operator) |
 | FR-5.3 (core) | Format N ∈ {0, 9, 10, 4294967295} | `Up: 0 s`, `Up: 9 s`, `Up: 10 s`, `Up: 4294967295 s` | Any other string | n/a | host |
 | FR-5.4 | Running; capture 61 consecutive `hello: up=` lines | Each log-timestamp gap is 900 – 1100 ms; and 60 refreshes span 60 ± 1 s of bench wall clock | A gap outside the range; a missing line | 1000 ± 100 ms | target |
 | FR-5.5 | As FR-5.4 | Consecutive N differ by exactly 1; each N within ±1 of ⌊t/1000⌋ | Repeated or skipped N; N restarting at 0 | n/a | target |
-| FR-5.6 | Fault-injection build failing at init; bench issues USB reset | `hello: lcd init failed: ` line arrives | `hello: shown`; any reset | ≤ 3.0 s from the reset command | target |
+| FR-5.6 | Fault-injection build failing at init; bench issues USB reset | `hello: lcd init failed: ` line in the boot the reset caused (after its reset-reason line) | `hello: shown`; any reset | The line's ESP-IDF log timestamp ≤ 3000 ms | target |
 | FR-5.6 (core) | Transition function: BOOT, init done, guard failed | Next = DEGRADED; action = log init failure | Next = SHOWING; a retry action | n/a | host |
 | FR-5.7 | As FR-5.6, then capture 11 `hello: up=` lines | Gaps 900 – 1100 ms; N strictly +1 | No lines at all; a gap > 1100 ms | 1000 ± 100 ms | target |
 | FR-5.8 (core) | Transition function: SHOWING, 1 s tick, guard write failed | Next = DEGRADED; actions = log up, log write failure, in that order | Next = SHOWING; the up log dropped | n/a | host |
@@ -608,7 +608,7 @@ All configuration is build-time; nothing is changeable at runtime and nothing pe
 
 ```yaml
 document_status: draft
-fsd_version: 0.1.0
+fsd_version: 0.1.1
 repository: https://github.com/solchjg/tdisplay-s3-hello
 baseline_commit: (initial commit of this document)
 applicable_firmware_version: none yet
@@ -619,6 +619,7 @@ created: 2026-10-23
 last_updated: 2026-10-23
 change_history:
   - 0.1.0 2026-10-23 initial definition
+  - 0.1.1 2026-10-23 FR-5.2 / FR-5.6 contracts timed by the device log timestamp (spec-defect finding from /build); R-3 restated
 superseded_requirements: []
 open_decisions: []
 related_test_baseline: none yet
