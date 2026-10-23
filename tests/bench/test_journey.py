@@ -7,7 +7,7 @@ import re
 
 import pytest
 
-from conftest import hello_lines, this_boot, up_values
+from conftest import hello_lines, save_evidence, this_boot, up_values
 
 pytestmark = pytest.mark.journey
 
@@ -18,7 +18,9 @@ MARKER = "Init complete, running event-driven"
 def boot(bench, dut, flashed):
     """Boot capture of one USB reset. A monitor cannot span a bench reset
     (test-plan bench-serial-monitor note), so the reset's own capture is read."""
-    return this_boot(bench.serial_reset(dut).get("output") or [])
+    boot = this_boot(bench.serial_reset(dut).get("output") or [])
+    save_evidence("jrn01-boot", boot)   # carries `App version`, tying results to the image
+    return boot
 
 
 def test_jrn_01_1_flash(flashed):

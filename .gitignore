@@ -3,3 +3,5 @@ managed_components/
 sdkconfig
 sdkconfig.old
 test-results/
+__pycache__/
+*.pyc

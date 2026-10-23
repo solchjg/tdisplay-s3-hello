@@ -60,6 +60,10 @@ def test_cold_start_leaves_no_stray_pixels(bench, dut, flashed):
         pytest.fail(f"{dut} did not re-enumerate within 30 s of the replug")
     up = bench.serial_monitor(dut, pattern="hello: up=", timeout=15)
     assert up.get("matched"), "no uptime line after the power cycle (positive control)"
+    # The boot lines of a cold start are gone before the bench's proxy is back, so
+    # FR-6.4's "after hello: shown" is established by the operator seeing both lines
+    # (SHOWING); `up=` alone would also be logged in DEGRADED.
     assert bench.human_interaction(
-        f"TC-LCD-06. {HOLD} Press DONE only if there are NO stray pixels: no band of noise "
-        "along any edge, nothing between or around the two text lines.", timeout=300)
+        f"TC-LCD-06. {HOLD} Press DONE only if BOTH text lines are shown AND there are NO "
+        "stray pixels: no band of noise along any edge, nothing between or around the two "
+        "lines.", timeout=300)

@@ -113,6 +113,7 @@ def reset_and_follow(bench, slot, seconds):
     lines sharing one timestamp; that duplicate block is dropped.
     """
     bench.debug_start(slot=slot, chip=CHIP)
+    res = {}
     try:
         mark = (bench.serial_output(slot, lines=1).get("lines") or [{"ts": 0}])[-1]["ts"]
         res = bench.serial_reset(slot)
@@ -122,11 +123,29 @@ def reset_and_follow(bench, slot, seconds):
         ring = bench.serial_output(slot, lines=4000, since=mark).get("lines", [])
     finally:
         bench.debug_stop(slot=slot)
-    cap = set(res.get("output") or [])
-    from collections import Counter
-    shared = {ts for ts, n in Counter(e["ts"] for e in ring).items() if n >= 3}
-    lines = [e["text"] for e in ring if not (e["ts"] in shared and e["text"] in cap)]
+    # Drop the re-pushed capture only where it is exactly that: a run of
+    # entries sharing one timestamp whose texts equal the capture, in order.
+    # Anything else stays, so a second boot's banner can never be dropped.
+    cap = list(res.get("output") or [])
+    lines, i = [], 0
+    while i < len(ring):
+        block = ring[i:i + len(cap)]
+        if cap and len(block) == len(cap) and len({e["ts"] for e in block}) == 1 \
+                and [e["text"] for e in block] == cap:
+            i += len(cap)
+            continue
+        lines.append(ring[i]["text"])
+        i += 1
     return this_boot(lines)
+
+
+def save_evidence(name, lines):
+    """Write a raw capture to $EVIDENCE_DIR/<name>.log when EVIDENCE_DIR is set."""
+    d = os.environ.get("EVIDENCE_DIR")
+    if d:
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, f"{name}.log"), "w") as fh:
+            fh.write("\n".join(lines) + "\n")
 
 
 def hello_lines(output):

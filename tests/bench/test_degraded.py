@@ -16,7 +16,7 @@ import re
 import pytest
 
 from conftest import (CHIP, LOG_LINE, flash_coldflash, hello_lines, reset_and_follow,
-                      this_boot, up_values)
+                      save_evidence, this_boot, up_values)
 
 AFTER_FAILURE_S = 62          # FR-5.10 watches 60 s after the failure line
 BOOT_MARKS = ("ESP-ROM:", "rst:", "Guru Meditation", "abort()", "Backtrace:", "Rebooting...")
@@ -48,8 +48,9 @@ def _run(bench, dut, variant):
         res = flash_coldflash(bench.base_url, dut, CHIP, _fault_dir(variant))
         assert res.get("ok"), res.get("error") or res.get("output")
         # The fault lands within ~6 s of reset; then FR-5.10's minute.
-        _runs[variant] = {"variant": variant,
-                          "lines": reset_and_follow(bench, dut, 6 + AFTER_FAILURE_S)}
+        lines = reset_and_follow(bench, dut, 6 + AFTER_FAILURE_S)
+        save_evidence(f"lcdfault-{variant}-window", lines)   # FSD §5.5 evidence: the full window
+        _runs[variant] = {"variant": variant, "lines": lines}
     return _runs[variant]
 
 
@@ -73,6 +74,17 @@ def failure(run):
 
 def _after(run, idx):
     return run["lines"][idx + 1:]
+
+
+def assert_no_reset_and_counting(lines, from_ms, to_ms, expect):
+    """Prohibited outcomes shared by FR-5.8 – FR-5.10: no boot banner, reset
+    reason or panic in `lines`, and the refresh keeps going at N+1 with about
+    `expect` lines between from_ms and to_ms."""
+    marks = [ln for ln in lines if any(m in ln for m in BOOT_MARKS)]
+    assert not marks, f"reset or panic: {marks[:3]}"
+    ups = [(t, n) for t, n in up_values(lines) if from_ms < t <= to_ms]
+    assert abs(len(ups) - expect) <= 1, f"{len(ups)} up= lines in {(to_ms - from_ms) / 1000:.0f} s"
+    assert all(b[1] == a[1] + 1 for a, b in zip(ups, ups[1:])), "N not strictly +1"
 
 
 # TC-HELLO-10 · FR-5.6
@@ -111,8 +123,7 @@ def test_degraded_makes_no_display_call(run_init):
     after = [ln for ln in _after(run, idx) if "lcdfi: call" in ln]
     assert len(before) == 1 and "call start" in before[0], f"before the failure: {before}"
     assert not after, f"display calls after the failure (a retry?): {after[:3]}"
-    window = [n for t, n in up_values(_after(run, idx)) if fail_ms < t <= fail_ms + 30000]
-    assert abs(len(window) - 30) <= 1, f"{len(window)} up= lines in the 30 s window"
+    assert_no_reset_and_counting(_after(run, idx), fail_ms, fail_ms + 30000, 30)
 
 
 # TC-HELLO-14 · FR-5.8
@@ -127,6 +138,9 @@ def test_write_failure_enters_degraded_on_the_same_tick(run_write5):
     n_fail = int(prev[-1][3:])
     nxt = up_values(_after(run, idx))
     assert nxt and nxt[0][1] == n_fail + 1, "refreshes did not continue at N+1"
+    fail_ms = int(hits[0][1].group(2))
+    # FSD FR-5.8 full form: the 10 s after the failure, no reset, refreshes go on.
+    assert_no_reset_and_counting(_after(run, idx), fail_ms, fail_ms + 10000, 10)
 
 
 # TC-LOG-11 · FR-7.4
@@ -143,9 +157,4 @@ def test_no_reset_for_a_minute_after_the_failure(request, variant):
     _, hits = failure(run)
     assert hits, "no failure line"
     idx, fail_ms = hits[0][0], int(hits[0][1].group(2))
-    rest = _after(run, idx)
-    marks = [ln for ln in rest if any(m in ln for m in BOOT_MARKS)]
-    assert not marks, f"reset or panic after the failure: {marks[:3]}"
-    ups = [(t, n) for t, n in up_values(rest) if t <= fail_ms + 60000]
-    assert abs(len(ups) - 60) <= 1, f"{len(ups)} up= lines in the 60 s after the failure"
-    assert all(b[1] == a[1] + 1 for a, b in zip(ups, ups[1:])), "N not strictly +1"
+    assert_no_reset_and_counting(_after(run, idx), fail_ms, fail_ms + 60000, 60)
