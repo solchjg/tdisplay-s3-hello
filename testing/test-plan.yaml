@@ -40,6 +40,10 @@ capabilities:
     available: yes
     # Usage note carried from esp32-oled-hello: a `^`-anchored pattern did not
     # match lines the monitor itself returned; use unanchored patterns.
+    # Usage note (2026-10-23): a monitor running when the bench serial reset
+    # is issued ends at once with "timeout, no match" (log 03:02:53Z), so it
+    # cannot catch a one-shot boot line across a reset. Read the boot capture
+    # that the serial reset returns, or match a periodic line.
   bench-usb-reset:
     what: Reset the DUT in SLOT4 over USB-Serial/JTAG (Harness serial reset)
     available: yes
@@ -77,6 +81,14 @@ capabilities:
       `forward-path`, flashed via /api/flash at its flash_args offsets 0x0
       bootloader, 0x8000 partition table, 0x10000 app (3 hashes verified);
       serial monitor matched `OFF` in the ON/OFF stream at 02:51:43Z.
+      Boot marker: CI run 39892563917 (Build Firmware, commit 1de3851) artifact
+      `firmware-v0.0.0-1de3851` coldflash set, flashed at its flash_args
+      offsets 0x0 / 0x8000 / 0x10000 at 03:02:44Z (3 hashes verified; sha256
+      bootloader 0d9a5c9b…097f, partition-table 7f00b6c0…c820, tdisplay_hello
+      a4ab669d…fee). The boot capture of the bench serial reset at 03:03:25Z
+      shows `App version: 0.0.0-1de3851` and
+      `I (135) main: Init complete, running event-driven`.
+      Aid hashes (run 39891554233): forward_path.bin c1cdbb64…, lcd_probe.bin 3678fdbf….
       Board identity as a T-Display-S3 (not only an ESP32-S3) is shown by
       `lcd-st7789`: its built-in panel answers on the T-Display-S3 pin map.
   lcd-st7789:
@@ -86,7 +98,9 @@ capabilities:
     evidence: >
       CI run 39891554233 artifact `lcd-probe`, flashed at its flash_args offsets
       (0x0 / 0x8000 / 0x10000, hashes verified). Serial: every esp_lcd call
-      ESP_OK, then `lcdprobe: pattern drawn`. Operator prompt answered on the
+      ESP_OK, then `lcdprobe: pattern drawn` (boot capture returned by the
+      bench serial reset at 02:52:01Z; the bench log records the reset but
+      not the captured text). Operator prompt answered on the
       bench (activity log 02:58:25Z "Human confirmed"): with USB-C on the
       right, black background, white 2-px frame on all four edges with no
       noise, RED top-left, GREEN top-right, BLUE bottom-left.
