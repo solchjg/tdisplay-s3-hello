@@ -167,6 +167,10 @@ gates:
   # round 1 (1de3851): SHUT, #2 boot marker never observed (aid prints ON/OFF only)
   # round 2 (41edeba): SHUT, #2 boot-marker capture not on record; committed in aec3c24
   - {gate: ai-harnessed, verdict: OPEN, date: 2026-10-23, commit: 034f086, checker: fresh, round: 1}
+  - {gate: ready-for-shipment, verdict: OPEN, date: 2026-10-23, commit: c5b4b6a, checker: fresh, round: 4}
+  # round 1: SHUT, answered in 0ea1a0f (reboot-masking helper, prohibited outcomes, §5.5 evidence)
+  # round 2: SHUT, answered in ba68a02 (JRN-01.3 checks FR-5.2's prohibited outcome)
+  # round 3: SHUT, answered in c5b4b6a (verifies: narrowed to what each test checks)
 
 # ── Tests ────────────────────────────────────────────────────────────────
 # JRN-01 is the standard run (workflow shape: ordered, one test per step).
