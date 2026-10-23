@@ -19,7 +19,7 @@ bench answers only — never memory, transcripts, or the author's account.
 
 ```bash
 grep -nA3 'dut-tdisplay-s3-slot4:\|lcd-st7789:\|operator-at-bench:' testing/test-plan.yaml   # available: yes
-grep -c unproven testing/test-plan.yaml                                # expect 0
+grep -c 'available: unproven' testing/test-plan.yaml                   # expect 0 (fields, not the header comment)
 curl -fsS http://192.168.2.230:8080/api/devices | jq '.slots[] | select(.label=="SLOT4") | {present, detected_chip}'
 ```
 

@@ -14,12 +14,12 @@
   (next state, actions). The composition root executes the actions.
 - `lcd` returns `esp_err_t` for every call and never retries or aborts; policy
   belongs to `hello_logic` (FSD §6.5).
-- Panel bring-up order: GPIO 15 high → i80 bus (10 MHz) → ST7789 panel IO and
+- Panel bring-up order (confirmed by commissioning, capability `lcd-st7789`): GPIO 15 high → i80 bus (10 MHz) → ST7789 panel IO and
   panel → reset → init → colour inversion on → swap X/Y and mirror for landscape →
-  gap (0, 35) → display on → clear to black → draw → GPIO 38 high. The inversion,
-  mirror flags and gap are implementation recommendations from the LilyGO
-  reference code; FSD FR-6.1, FR-6.3 and FR-6.4 are the requirements, and the
-  operator checks decide.
+  gap (0, 35) → display on → clear to black → draw → GPIO 38 high. Use exactly
+  invert_color(true), swap_xy(true), mirror(false, true), RGB element order, and
+  RGB565 pixels byte-swapped (MSB first) in the draw buffer for the 8-bit bus.
+  FSD FR-6.1, FR-6.3 and FR-6.4 are the requirements; operator checks decide.
 - Text uses a 16 × 32 fixed-width bitmap font (ASCII 0x20 – 0x7E only). Line 1 at
   y = 40, line 2 at y = 96, both at x = 16 (recommendation; FR-6.5 is the
   requirement). Line 2 is redrawn by drawing its full 288 px-wide row cell, so

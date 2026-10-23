@@ -18,6 +18,14 @@ testbench:
     observed: 2026-10-23
     hostname: testbench-0441
     last_seen_ip: 192.168.2.230
+    portal_version: not reported (/api/info carries none)
+dut_record:   # the unit this project is verified against (observed 2026-10-23, /api/chip/info SLOT4)
+  chip: ESP32-S3 (QFN56)
+  revision: v0.1
+  psram: embedded 8MB (AP_3v3)
+  flash: 16MB (manufacturer 0xef, device 0x4018), quad
+  mac: 34:85:18:71:c7:34
+  usb: USB-Serial/JTAG 303a:1001, /dev/ttyACM0
 
 # ── Capabilities ─────────────────────────────────────────────────────────
 # Bench capabilities: `yes` as the bench declares them (Harness FSD); a
@@ -60,13 +68,43 @@ capabilities:
     # verify time is an unmet precondition (not done), never a failure.
   dut-tdisplay-s3-slot4:
     what: The board in SLOT4 is a T-Display-S3 with 16 MB flash; a CI-built image flashes over USB and its log reaches SLOT4's monitor
-    available: unproven
+    available: yes
+    observed: 2026-10-23
+    evidence: >
+      /api/chip/info SLOT4: ESP32-S3 (QFN56) v0.1, 8MB embedded PSRAM, flash
+      0xef/0x4018 detected 16MB, MAC 34:85:18:71:c7:34 (matches FSD §2.2 / C-10.3).
+      CI run 39891554233 (Commissioning aids, commit of commissioning/) artifact
+      `forward-path`, flashed via /api/flash at its flash_args offsets 0x0
+      bootloader, 0x8000 partition table, 0x10000 app (3 hashes verified);
+      serial monitor matched `OFF` in the ON/OFF stream at 02:51:43Z.
+      Board identity as a T-Display-S3 (not only an ESP32-S3) is shown by
+      `lcd-st7789`: its built-in panel answers on the T-Display-S3 pin map.
   lcd-st7789:
     what: The built-in ST7789 lights correctly with the FSD §2.2 pin map, GPIO 15 power, GPIO 38 backlight, 10 MHz i80 clock and offset 35
-    available: unproven
+    available: yes
+    observed: 2026-10-23
+    evidence: >
+      CI run 39891554233 artifact `lcd-probe`, flashed at its flash_args offsets
+      (0x0 / 0x8000 / 0x10000, hashes verified). Serial: every esp_lcd call
+      ESP_OK, then `lcdprobe: pattern drawn`. Operator prompt answered on the
+      bench (activity log 02:58:25Z "Human confirmed"): with USB-C on the
+      right, black background, white 2-px frame on all four edges with no
+      noise, RED top-left, GREEN top-right, BLUE bottom-left.
+    consequence: >
+      These settings are confirmed, not just recommended: invert_color(true),
+      swap_xy(true), mirror(false, true), set_gap(0, 35), RGB element order,
+      and RGB565 bytes swapped (MSB first) in the buffer for the 8-bit bus.
+      Since the bus is write-only, ESP_OK from esp_lcd proved nothing by
+      itself; the operator answer is the observation.
   operator-at-bench:
     what: A person at the bench answers operator prompts and can see the T-Display-S3 panel, held USB-C to the right
-    available: unproven
+    available: yes
+    observed: 2026-10-23
+    evidence: the lcd-probe prompt was answered Done on the Pi display (activity log 02:58:25Z), and only someone looking at the panel could answer it
+    consequence: >
+      The answer counts only when it is given on the Pi display and the bench
+      logs "Human confirmed". A first answer given elsewhere never reached the
+      bench, and the prompt stayed pending.
 
 # ── Gate verdicts ────────────────────────────────────────────────────────
 gates:
