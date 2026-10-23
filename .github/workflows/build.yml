@@ -72,6 +72,14 @@ jobs:
           echo "app image: $SIZE bytes"
           [ "$SIZE" -le 1048576 ] || { echo "FATAL: image exceeds 1 MB"; exit 1; }
 
+      # Host-tier inspection of this build (FSD C-10.1 – C-10.4, FR-9.1);
+      # in ci.yml these tests skip for want of a build.
+      - name: Inspect the build (tests/host/test_build.py)
+        run: |
+          . $IDF_PATH/export.sh >/dev/null
+          python -m pip install -q 'pytest==8.*'
+          BUILD_OUTPUT=build python -m pytest tests/host/test_build.py -v -rs -p no:cacheprovider
+
       - name: Collect artefacts
         run: |
           V="${{ steps.plan.outputs.version }}"
