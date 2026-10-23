@@ -35,6 +35,11 @@ capabilities:
   bench-flash:
     what: Flash an image set to SLOT4 over USB (Harness /api/flash)
     available: yes
+    # Usage notes (2026-10-23): upload the artefact's flash_args file with the
+    # parts; without it the bench flashes at 40 MHz, not the build's 80m.
+    # /api/chip/info runs esptool and appears in the activity log as
+    # "flash(SLOT4)" with about 665 bytes of output (02:47:11Z, 03:04:14Z); it
+    # reads identity and does not write an image.
   bench-serial-monitor:
     what: Read SLOT4 serial with pattern wait, DTR/RTS held low (Harness serial monitor)
     available: yes
@@ -82,8 +87,10 @@ capabilities:
       bootloader, 0x8000 partition table, 0x10000 app (3 hashes verified);
       serial monitor matched `OFF` in the ON/OFF stream at 02:51:43Z.
       Boot marker: CI run 39892563917 (Build Firmware, commit 1de3851) artifact
-      `firmware-v0.0.0-1de3851` coldflash set, flashed at its flash_args
-      offsets 0x0 / 0x8000 / 0x10000 at 03:02:44Z (3 hashes verified; sha256
+      `firmware-v0.0.0-1de3851` coldflash set, flashed at the offsets in its
+      flash_args, 0x0 / 0x8000 / 0x10000, at 03:02:44Z (sent as per-offset
+      parts without the flash_args file, so the bench used its 40 MHz default
+      and not the build's 80m; boot capture shows SPI speed 40MHz) (3 hashes verified; sha256
       bootloader 0d9a5c9b…097f, partition-table 7f00b6c0…c820, tdisplay_hello
       a4ab669d…fee). The boot capture of the bench serial reset at 03:03:25Z
       shows `App version: 0.0.0-1de3851` and
@@ -104,7 +111,8 @@ capabilities:
       (0x0 / 0x8000 / 0x10000, hashes verified). Serial: every esp_lcd call
       ESP_OK, then `lcdprobe: pattern drawn` (boot capture returned by the
       bench serial reset at 02:52:01Z; the bench log records the reset but
-      not the captured text). Operator prompt answered on the
+      not the captured text, and that capture is not committed; the link from
+      the 02:51:54Z flash to this artefact rests on timing). Operator prompt answered on the
       bench (activity log 02:58:25Z "Human confirmed"): with USB-C on the
       right, black background, white 2-px frame on all four edges with no
       noise, RED top-left, GREEN top-right, BLUE bottom-left.
@@ -126,6 +134,9 @@ capabilities:
 
 # ── Gate verdicts ────────────────────────────────────────────────────────
 gates:
+  - {gate: dut-ready, verdict: OPEN, date: 2026-10-23, commit: aec3c24, checker: fresh, round: 3}
+  # round 1 (1de3851): SHUT, #2 boot marker never observed (aid prints ON/OFF only)
+  # round 2 (41edeba): SHUT, #2 boot-marker capture not on record; committed in aec3c24
   - {gate: ai-harnessed, verdict: OPEN, date: 2026-10-23, commit: 034f086, checker: fresh, round: 1}
 
 # ── Tests ────────────────────────────────────────────────────────────────
