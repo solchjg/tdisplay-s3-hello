@@ -32,12 +32,19 @@ def test_jrn_01_2_boot_marker(boot):
     assert len(hits) == 1, f"marker seen {len(hits)} times"
     startup = [i for i, ln in enumerate(boot) if "app_init:" in ln]
     assert startup and hits[0] > max(startup), "marker before the ESP-IDF startup lines"
+    # FSD C-10.5: after a USB-only flash and reset, `hello: up=` lines appear.
+    assert up_values(boot), "no `hello: up=` line after the USB reset"
 
 
 def test_jrn_01_3_display_up(boot):
+    msgs = [msg for _, _, msg in hello_lines(boot)]
     shown = [(ms, msg) for _, ms, msg in hello_lines(boot)
              if msg == 'shown line1="Hello, world!"']
     assert shown, "no `hello: shown` in the boot capture"
+    # FSD FR-5.2 prohibited outcome: an init failure before `hello: shown`.
+    first_shown = msgs.index('shown line1="Hello, world!"')
+    assert not any(m.startswith("lcd init failed") for m in msgs[:first_shown]), \
+        "`hello: lcd init failed` before `hello: shown`"
     # FSD FR-5.2 (0.1.1): the line's own log timestamp, ms since the chip's reset.
     assert int(shown[0][0]) <= 3000
 

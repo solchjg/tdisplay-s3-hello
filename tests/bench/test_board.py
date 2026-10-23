@@ -10,6 +10,12 @@ def test_board_flash_is_16mb(bench, dut):
     assert bench.chip_info(dut).get("flash_size") == "16MB"
 
 
+def _running(bench, dut):
+    """Positive control for the air checks: the DUT is up and logging."""
+    m = bench.serial_monitor(dut, pattern="hello: up=", timeout=5)
+    assert m.get("matched"), "DUT not running (no `hello: up=`); an empty scan would prove nothing"
+
+
 def _dut_macs():
     """WiFi STA, SoftAP, BT and Ethernet MACs derive from the base MAC (+0 to +3)."""
     base = int(MAC.replace(":", ""), 16)
@@ -19,6 +25,7 @@ def _dut_macs():
 # TC-SEC-02 · FR-9.1 (air, BLE half). The WiFi half is TC-SEC-03: the bench
 # scan reports no BSSID, so it cannot tell the DUT's AP from any other.
 def test_dut_does_not_advertise_on_ble(bench, dut, flashed):
+    _running(bench, dut)
     macs = _dut_macs()
     seen = [d for d in bench.ble_scan(timeout=int(os.environ.get("BLE_SCAN_S", "8")))
             if (d.get("address") or "").lower() in macs]
@@ -33,6 +40,7 @@ def _default_softap_ssids():
 
 # TC-SEC-03 · FR-9.1 (air, WiFi half; FSD 0.1.2, R-6)
 def test_dut_runs_no_default_softap(bench, dut, flashed):
+    _running(bench, dut)
     ssids = _default_softap_ssids()
     nets = bench.scan().get("networks", [])
     assert nets, "WiFi scan saw no networks at all (positive control: the bench radio is listening)"
