@@ -1,0 +1,138 @@
+rst:0x3 (RTC_SW_SYS_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+Saved PC:0x403769ae
+pro cpu reset by JTAG
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fce2820,len:0x1548
+load:0x403c8700,len:0xd68
+load:0x403cb700,len:0x2f5c
+entry 0x403c8904
+I (32) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (32) boot: compile time Oct 23 2026 04:41:51
+I (32) boot: Multicore bootloader
+I (34) boot: chip revision: v0.1
+I (35) boot: efuse block revision: v1.2
+I (36) boot.esp32s3: Boot SPI Speed : 40MHz
+I (38) boot.esp32s3: SPI Mode       : DIO
+I (38) boot.esp32s3: SPI Flash Size : 16MB
+I (39) boot: Enabling RNG early entropy source...
+I (39) boot: Partition Table:
+I (41) boot: ## Label            Usage          Type ST Offset   Length
+I (43) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (45) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (46) boot:  2 factory          factory app      00 00 00010000 00100000
+I (49) boot: End of partition table
+I (50) esp_image: segment 0: paddr=00010020 vaddr=3c010020 size=08f94h ( 36756) map
+I (62) esp_image: segment 1: paddr=00018fbc vaddr=3fc90000 size=02f3ch ( 12092) load
+I (66) esp_image: segment 2: paddr=0001bf00 vaddr=40374000 size=04118h ( 16664) load
+I (71) esp_image: segment 3: paddr=00020020 vaddr=42000020 size=0f7e4h ( 63460) map
+I (89) esp_image: segment 4: paddr=0002f80c vaddr=40378118 size=07e90h ( 32400) load
+I (99) esp_image: segment 5: paddr=000376a4 vaddr=50000000 size=00024h (    36) load
+I (105) boot: Loaded app from partition at offset 0x10000
+I (105) boot: Disabling RNG early entropy source...
+I (106) cpu_start: Multicore app
+I (169) cpu_start: Pro cpu start user code
+I (169) cpu_start: cpu freq: 160000000 Hz
+I (169) app_init: Application information:
+I (171) app_init: Project name:     tdisplay_hello_lcdfault
+I (171) app_init: App version:      0ea1a0f
+I (171) app_init: Compile time:     Oct 23 2026 04:42:32
+I (172) app_init: ELF file SHA256:  1f8554c71...
+I (174) app_init: ESP-IDF:          v6.0.2
+I (175) efuse_init: Min chip rev:     v0.0
+I (176) efuse_init: Max chip rev:     v0.99 
+I (178) efuse_init: Chip rev:         v0.1
+I (179) heap_init: Initializing. RAM available for dynamic allocation:
+I (181) heap_init: At 3FC938B0 len 00055E60 (343 KiB): RAM
+I (181) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (182) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (184) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (186) spi_flash: detected chip: winbond
+I (186) spi_flash: flash io: dio
+I (188) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (190) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (193) main_task: Started on CPU0
+I (193) main_task: Calling app_main()
+I (193) lcdfi: call start
+I (193) lcdfi: call backlight 1
+I (193) hello: shown line1="Hello, world!"
+I (193) main: Init complete, running event-driven
+I (1193) lcdfi: call draw 1
+I (1193) hello: up=1
+I (2193) lcdfi: call draw 2
+I (2193) hello: up=2
+I (3193) lcdfi: call draw 3
+I (3193) hello: up=3
+I (4193) lcdfi: call draw 4
+I (4193) hello: up=4
+I (5193) lcdfi: call draw 5
+I (5193) hello: up=5
+E (5193) hello: lcd write failed: ESP_ERR_INVALID_STATE
+I (6193) hello: up=6
+I (7193) hello: up=7
+I (8193) hello: up=8
+I (9193) hello: up=9
+I (10193) hello: up=10
+I (11193) hello: up=11
+I (12193) hello: up=12
+I (13193) hello: up=13
+I (14193) hello: up=14
+I (15193) hello: up=15
+I (16193) hello: up=16
+I (17193) hello: up=17
+I (18193) hello: up=18
+I (19193) hello: up=19
+I (20193) hello: up=20
+I (21193) hello: up=21
+I (22193) hello: up=22
+I (23193) hello: up=23
+I (24193) hello: up=24
+I (25193) hello: up=25
+I (26193) hello: up=26
+I (27193) hello: up=27
+I (28193) hello: up=28
+I (29193) hello: up=29
+I (30193) hello: up=30
+I (31193) hello: up=31
+I (32193) hello: up=32
+I (33193) hello: up=33
+I (34193) hello: up=34
+I (35193) hello: up=35
+I (36193) hello: up=36
+I (37193) hello: up=37
+I (38193) hello: up=38
+I (39193) hello: up=39
+I (40193) hello: up=40
+I (41193) hello: up=41
+I (42193) hello: up=42
+I (43193) hello: up=43
+I (44193) hello: up=44
+I (45193) hello: up=45
+I (46193) hello: up=46
+I (47193) hello: up=47
+I (48193) hello: up=48
+I (49193) hello: up=49
+I (50193) hello: up=50
+I (51193) hello: up=51
+I (52193) hello: up=52
+I (53193) hello: up=53
+I (54193) hello: up=54
+I (55193) hello: up=55
+I (56193) hello: up=56
+I (57193) hello: up=57
+I (58193) hello: up=58
+I (59193) hello: up=59
+I (60193) hello: up=60
+I (61193) hello: up=61
+I (62193) hello: up=62
+I (63193) hello: up=63
+I (64193) hello: up=64
+I (65193) hello: up=65
+I (66193) hello: up=66
+I (67193) hello: up=67
+I (68193) hello: up=68
+I (69193) hello: up=69
+I (70193) hello: up=70
+I (71193) hello: up=71
+I (72193) hello: up=72
+I (73193) hello: up=73

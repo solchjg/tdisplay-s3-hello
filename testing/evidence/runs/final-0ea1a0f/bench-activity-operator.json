@@ -1,0 +1,62 @@
+[
+  {
+    "ts": "2026-10-23T04:47:26.400254+00:00",
+    "msg": "Human interaction: TC-LCD-05. Hold the T-Display-S3 in landscape with its USB-C connector on your RIGHT. Press DONE only if BOTH text lines are clearly legible: no blank, noisy, shifted or garbled areas.",
+    "cat": "step"
+  },
+  {
+    "ts": "2026-10-23T04:48:52.415346+00:00",
+    "msg": "Human confirmed: TC-LCD-05. Hold the T-Display-S3 in landscape with its USB-C connector on your RIGHT. Press DONE only if BOTH text lines are clearly legible: no blank, noisy, shifted or garbled areas.",
+    "cat": "ok"
+  },
+  {
+    "ts": "2026-10-23T04:48:52.423174+00:00",
+    "msg": "Human interaction: TC-LCD-07. Press DONE only if the screen's backlight is ON: the text glows and can be read without room light falling on it, and it does not flicker.",
+    "cat": "step"
+  },
+  {
+    "ts": "2026-10-23T04:49:38.796981+00:00",
+    "msg": "Human confirmed: TC-LCD-07. Press DONE only if the screen's backlight is ON: the text glows and can be read without room light falling on it, and it does not flicker.",
+    "cat": "ok"
+  },
+  {
+    "ts": "2026-10-23T04:49:38.805054+00:00",
+    "msg": "Human interaction: TC-LCD-06 (power cycle). Unplug the T-Display-S3's USB-C cable, wait 5 seconds, plug it back in, then press DONE.",
+    "cat": "step"
+  },
+  {
+    "ts": "2026-10-23T04:50:11.800188+00:00",
+    "msg": "Human confirmed: TC-LCD-06 (power cycle). Unplug the T-Display-S3's USB-C cable, wait 5 seconds, plug it back in, then press DONE.",
+    "cat": "ok"
+  },
+  {
+    "ts": "2026-10-23T04:50:12.255229+00:00",
+    "msg": "Human interaction: TC-LCD-06. Hold the T-Display-S3 in landscape with its USB-C connector on your RIGHT. Press DONE only if BOTH text lines are shown AND there are NO stray pixels: no band of noise along any edge, nothing between or around the two lines.",
+    "cat": "step"
+  },
+  {
+    "ts": "2026-10-23T04:50:21.279708+00:00",
+    "msg": "Human confirmed: TC-LCD-06. Hold the T-Display-S3 in landscape with its USB-C connector on your RIGHT. Press DONE only if BOTH text lines are shown AND there are NO stray pixels: no band of noise along any edge, nothing between or around the two lines.",
+    "cat": "ok"
+  },
+  {
+    "ts": "2026-10-23T04:51:36.449732+00:00",
+    "msg": "Human interaction: JRN-01.4: hold the T-Display-S3 with USB-C on your RIGHT. Press DONE only if the top line reads exactly 'Hello, world!', upright, white text on black.",
+    "cat": "step"
+  },
+  {
+    "ts": "2026-10-23T04:51:59.408640+00:00",
+    "msg": "Human confirmed: JRN-01.4: hold the T-Display-S3 with USB-C on your RIGHT. Press DONE only if the top line reads exactly 'Hello, world!', upright, white text on black.",
+    "cat": "ok"
+  },
+  {
+    "ts": "2026-10-23T04:52:12.518661+00:00",
+    "msg": "Human interaction: JRN-01.6. Watch the second line count up. Press DONE at the moment it reads exactly 'Up: 66 s' (same spelling: 'Up:', the number, a space, 's'). If it reads anything else, or you miss it, press CANCEL.",
+    "cat": "step"
+  },
+  {
+    "ts": "2026-10-23T04:52:42.938344+00:00",
+    "msg": "Human confirmed: JRN-01.6. Watch the second line count up. Press DONE at the moment it reads exactly 'Up: 66 s' (same spelling: 'Up:', the number, a space, 's'). If it reads anything else, or you miss it, press CANCEL.",
+    "cat": "ok"
+  }
+]

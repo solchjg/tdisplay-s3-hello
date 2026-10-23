@@ -184,7 +184,7 @@ tests:
     needs: [bench-flash, dut-tdisplay-s3-slot4]
     observable: flash reports success for every image in flash_args
     impl: tests/bench/test_journey.py::test_jrn_01_1_flash
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: JRN-01.2
     title: USB reset reaches the boot marker
@@ -197,7 +197,7 @@ tests:
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     observable: "`Init complete, running event-driven` exactly once on SLOT4 serial"
     impl: tests/bench/test_journey.py::test_jrn_01_2_boot_marker
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: JRN-01.3
     title: Display comes up within the boot deadline
@@ -210,7 +210,7 @@ tests:
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: "`hello: shown line1=\"Hello, world!\"` with log timestamp ≤ 3000 ms, in the boot the reset caused"
     impl: tests/bench/test_journey.py::test_jrn_01_3_display_up
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: JRN-01.4
     title: Operator sees the greeting upright, white on black
@@ -223,7 +223,7 @@ tests:
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     observable: operator confirms `Hello, world!` on the top line, upright with USB-C on the right, white on black
     impl: tests/bench/test_journey.py::test_jrn_01_4_operator_sees_greeting
-    result: {status: successful, commit: 5f9a4b8, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-operator.junit.xml + bench activity log 04:23-04:27Z (Human confirmed)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + bench-activity-operator.json (Human confirmed)"}
 
   - id: JRN-01.5
     title: Uptime ticks once per second
@@ -236,7 +236,7 @@ tests:
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     observable: "`hello: up=<N>`, N +1 per line, gaps 900–1100 ms over 10 lines"
     impl: tests/bench/test_journey.py::test_jrn_01_5_uptime_ticks
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: JRN-01.6
     title: Operator sees the uptime line match the log
@@ -251,7 +251,7 @@ tests:
     impl: tests/bench/test_journey.py::test_jrn_01_6_operator_sees_uptime
     # 2026-10-23 03:47Z run at 2cd9769 failed: operator pressed DONE late (operator
     # confirmed); lead raised from 20 s to 30 s in d2834e1, then green.
-    result: {status: successful, commit: 5f9a4b8, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-operator.junit.xml + bench activity log 04:23-04:27Z (Human confirmed)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + bench-activity-operator.json (Human confirmed)"}
 
   - id: TC-TIER-01
     title: Host tier runs (C compiler and pytest available)
@@ -263,7 +263,7 @@ tests:
     # Infrastructure check: proves the tier exists, verifies no requirement.
     needs: []
     impl: tests/host/test_tier.py::test_host_c_compiler_builds_and_runs
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-BUILD-01
     title: Build targets esp32s3
@@ -275,7 +275,7 @@ tests:
     verifies: [C-10.1]
     needs: []
     impl: tests/host/test_build.py::test_target_is_esp32s3
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-79f2e9b, date: 2026-10-23, evidence: "CI Build Firmware 39899562075 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "CI Build Firmware 39901536985 (0ea1a0f)"}
 
   - id: TC-BUILD-02
     title: Build uses ESP-IDF v6.0.2 (app descriptor idf_ver)
@@ -287,7 +287,7 @@ tests:
     verifies: [C-10.2]
     needs: []
     impl: tests/host/test_build.py::test_idf_version_is_v6_0_2
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-79f2e9b, date: 2026-10-23, evidence: "CI Build Firmware 39899562075 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "CI Build Firmware 39901536985 (0ea1a0f)"}
 
   - id: TC-BUILD-03
     title: Build states 16 MB flash
@@ -299,7 +299,7 @@ tests:
     verifies: [C-10.3]
     needs: []
     impl: tests/host/test_build.py::test_flash_size_is_stated_16mb
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-79f2e9b, date: 2026-10-23, evidence: "CI Build Firmware 39899562075 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "CI Build Firmware 39901536985 (0ea1a0f)"}
 
   - id: TC-BUILD-04
     title: App fits the default single-app 1 MB factory partition
@@ -311,7 +311,7 @@ tests:
     verifies: [C-10.4]
     needs: []
     impl: tests/host/test_build.py::test_app_fits_default_single_app_partition
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-79f2e9b, date: 2026-10-23, evidence: "CI Build Firmware 39899562075 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "CI Build Firmware 39901536985 (0ea1a0f)"}
 
   - id: TC-BUILD-05
     title: Board in SLOT4 reads 16 MB flash
@@ -323,7 +323,7 @@ tests:
     verifies: [C-10.3]
     needs: [dut-tdisplay-s3-slot4]
     impl: tests/bench/test_board.py::test_board_flash_is_16mb
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-SEC-01
     title: No WiFi or BT init symbol linked
@@ -336,7 +336,7 @@ tests:
     needs: []
     # Non-adversarial static check of the profile's one protection; adversarial security is Wave 3.
     impl: tests/host/test_build.py::test_no_radio_initialisation_linked
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-79f2e9b, date: 2026-10-23, evidence: "CI Build Firmware 39899562075 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "CI Build Firmware 39901536985 (0ea1a0f)"}
 
   - id: TC-SEC-02
     title: DUT does not advertise on BLE
@@ -348,7 +348,7 @@ tests:
     verifies: [FR-9.1]
     needs: [bench-ble-scan, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_board.py::test_dut_does_not_advertise_on_ble
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-SEC-03
     title: "DUT advertises no default-SSID SoftAP (ESP_ + MAC tail)"
@@ -361,7 +361,7 @@ tests:
     needs: [bench-wifi-scan, dut-tdisplay-s3-slot4]
     # FSD 0.1.2: SSID match, because the scan has no BSSID (#50); R-6 says what it cannot see.
     impl: tests/bench/test_board.py::test_dut_runs_no_default_softap
-    result: {status: successful, commit: c2985ae, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-board.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-LOG-01
     title: "Up-line format core: up=0, up=4294967295"
@@ -373,7 +373,7 @@ tests:
     verifies: [FR-7.3]
     needs: []
     impl: tests/host/test_hello_log.py::test_up_line_format
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-LOG-02
     title: "Every hello: line carries the ms timestamp prefix"
@@ -385,7 +385,7 @@ tests:
     verifies: [FR-7.5]
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_heartbeat.py::test_every_hello_line_has_the_timestamp_prefix
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-LOG-03
     title: One up= line per refresh, no extra text
@@ -398,7 +398,7 @@ tests:
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     # The contract's drawn-value match (with FR-5.3) is Phase 2 and joins this test then.
     impl: tests/bench/test_heartbeat.py::test_one_up_line_per_refresh
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-HELLO-01
     title: Refresh every 1000 ± 100 ms; 60 refreshes span 60 ± 1 s wall
@@ -410,7 +410,7 @@ tests:
     verifies: [FR-5.4]
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_heartbeat.py::test_refresh_period
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-HELLO-02
     title: N steps by exactly 1 and stays within 1 of the log clock
@@ -422,7 +422,7 @@ tests:
     verifies: [FR-5.5]
     needs: [bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_heartbeat.py::test_uptime_steps_by_one_and_tracks_the_clock
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-TIER-02
     title: Test plan parses as YAML with unique ids
@@ -435,7 +435,7 @@ tests:
     # until 2026-10-23 (an unquoted `Up: <N> s`), and no grep-based check saw it.
     needs: []
     impl: tests/host/test_plan.py::test_plan_is_valid_yaml_with_unique_ids
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-HELLO-03
     title: "Line 2 format core: Up: 0 s ... Up: 4294967295 s"
@@ -447,7 +447,7 @@ tests:
     verifies: [FR-5.3]
     needs: []
     impl: tests/host/test_hello_logic.py::test_line2_format
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-HELLO-04
     title: "Line 1 text is exactly Hello, world!"
@@ -459,7 +459,7 @@ tests:
     verifies: [FR-5.1]
     needs: []
     impl: tests/host/test_hello_logic.py::test_line1_text
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-HELLO-05
     title: "T1: BOOT, init ok -> SHOWING, backlight on, log shown"
@@ -471,7 +471,7 @@ tests:
     verifies: [FR-5.2]
     needs: []
     impl: tests/host/test_hello_logic.py::test_t1_boot_init_ok_enters_showing
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-HELLO-06
     title: "T3: SHOWING, tick, write ok -> SHOWING, redraw, log up"
@@ -483,7 +483,7 @@ tests:
     verifies: [FR-5.4]
     needs: []
     impl: tests/host/test_hello_logic.py::test_t3_showing_tick_ok_stays_and_logs
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-LCD-01
     title: "LCD configuration states the FSD pins, clock and offset"
@@ -495,7 +495,7 @@ tests:
     verifies: [C-6.1, C-6.2, C-6.3, C-6.4, C-6.5]
     needs: []
     impl: tests/host/test_lcd_text.py::test_configuration_states_the_fsd_values
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-LCD-02
     title: "Font is fixed-width 16 x 32, ASCII 0x20-0x7E"
@@ -507,7 +507,7 @@ tests:
     verifies: [FR-6.2]
     needs: []
     impl: tests/host/test_lcd_text.py::test_font_is_fixed_16x32
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-LCD-03
     title: "Lines stacked without overlap inside 320 x 170"
@@ -519,7 +519,7 @@ tests:
     verifies: [FR-6.5]
     needs: []
     impl: tests/host/test_lcd_text.py::test_lines_are_stacked_inside_the_visible_area
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-LCD-04
     title: "Longest line 2 fits one row within 320 px"
@@ -531,7 +531,7 @@ tests:
     verifies: [FR-6.6]
     needs: []
     impl: tests/host/test_lcd_text.py::test_longest_line2_fits_on_one_row
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-LCD-05
     title: "Operator: both lines legible (pin map, clock, offset on the wire)"
@@ -543,7 +543,7 @@ tests:
     verifies: [C-6.1, C-6.2, C-6.3, C-6.4, C-6.5]
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     impl: tests/bench/test_display.py::test_operator_sees_both_lines_legible
-    result: {status: successful, commit: 5f9a4b8, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-operator.junit.xml + bench activity log 04:23-04:27Z (Human confirmed)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + bench-activity-operator.json (Human confirmed)"}
 
   - id: TC-LCD-06
     title: "Cold start (USB-C power cycle): no stray pixels"
@@ -557,7 +557,7 @@ tests:
     impl: tests/bench/test_display.py::test_cold_start_leaves_no_stray_pixels
     # 04:25Z run at 5f9a4b8 failed before its stray-pixel prompt: the monitor ran
     # before the serial proxy was back after the replug (test defect, fixed c25b1bf).
-    result: {status: successful, commit: c25b1bf, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-lcd06.junit.xml + bench activity log (Human confirmed)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + bench-activity-operator.json (Human confirmed)"}
 
   - id: TC-LCD-07
     title: "Operator: backlight on in SHOWING"
@@ -569,7 +569,7 @@ tests:
     verifies: [FR-6.7]
     needs: [bench-operator-prompt, operator-at-bench, dut-tdisplay-s3-slot4, lcd-st7789]
     impl: tests/bench/test_display.py::test_operator_sees_backlight_on
-    result: {status: successful, commit: 5f9a4b8, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-operator.junit.xml + bench activity log 04:23-04:27Z (Human confirmed)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + bench-activity-operator.json (Human confirmed)"}
 
   - id: TC-LOG-04
     title: "hello: shown logged exactly once per boot"
@@ -581,7 +581,7 @@ tests:
     verifies: [FR-7.1]
     needs: [bench-usb-reset, bench-serial-monitor, dut-tdisplay-s3-slot4, lcd-st7789]
     impl: tests/bench/test_display.py::test_shown_logged_once_per_boot
-    result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
+    result: {status: successful, commit: 0ea1a0f, firmware: 0.0.0-0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + jrn01-boot.log"}
 
   - id: TC-LOG-05
     title: "Shown-line format core"
@@ -593,7 +593,7 @@ tests:
     verifies: [FR-7.1]
     needs: []
     impl: tests/host/test_hello_log.py::test_shown_line_format
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-HELLO-10
     title: "T2: init fails -> DEGRADED within 3 s of reset, no reset"
@@ -605,7 +605,7 @@ tests:
     verifies: [FR-5.6]
     needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_degraded.py::test_init_failure_enters_degraded_within_3s
-    result: {status: successful, commit: 79f2e9b, firmware: lcdfault 047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-degraded.junit.xml (fault builds lcdfault-init / lcdfault-write5 of CI run 39897942707)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: lcdfault 0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + lcdfault-init-window.log / lcdfault-write5-window.log"}
 
   - id: TC-HELLO-11
     title: "T2 core: BOOT, init failed -> DEGRADED, log init failure, no retry"
@@ -617,7 +617,7 @@ tests:
     verifies: [FR-5.6]
     needs: []
     impl: tests/host/test_hello_logic.py::test_t2_boot_init_failed_enters_degraded_without_retry
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-HELLO-12
     title: "DEGRADED keeps the 1 s refresh on serial"
@@ -629,7 +629,7 @@ tests:
     verifies: [FR-5.7]
     needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_degraded.py::test_degraded_keeps_the_refresh_on_serial
-    result: {status: successful, commit: 79f2e9b, firmware: lcdfault 047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-degraded.junit.xml (fault builds lcdfault-init / lcdfault-write5 of CI run 39897942707)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: lcdfault 0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + lcdfault-init-window.log / lcdfault-write5-window.log"}
 
   - id: TC-HELLO-13
     title: "T4 core: SHOWING, tick, write failed -> DEGRADED, log up then failure"
@@ -641,7 +641,7 @@ tests:
     verifies: [FR-5.8]
     needs: []
     impl: tests/host/test_hello_logic.py::test_t4_showing_write_failed_enters_degraded_logging_up_first
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-HELLO-14
     title: "Write fails at runtime -> DEGRADED on the same tick, no reset"
@@ -653,7 +653,7 @@ tests:
     verifies: [FR-5.8]
     needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_degraded.py::test_write_failure_enters_degraded_on_the_same_tick
-    result: {status: successful, commit: 79f2e9b, firmware: lcdfault 047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-degraded.junit.xml (fault builds lcdfault-init / lcdfault-write5 of CI run 39897942707)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: lcdfault 0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + lcdfault-init-window.log / lcdfault-write5-window.log"}
 
   - id: TC-HELLO-15
     title: "T5 core: DEGRADED makes no display call over 100 ticks"
@@ -665,7 +665,7 @@ tests:
     verifies: [FR-5.9]
     needs: []
     impl: tests/host/test_hello_logic.py::test_t5_degraded_never_touches_the_display
-    result: {status: successful, commit: 79f2e9b, date: 2026-10-23, evidence: "CI host tests + lint 39899562110 (79f2e9b)"}
+    result: {status: successful, commit: 0ea1a0f, date: 2026-10-23, evidence: "CI host tests + lint 39901536912 (0ea1a0f)"}
 
   - id: TC-HELLO-16
     title: "DEGRADED: no display call after the failure (lcdfi: call count)"
@@ -677,7 +677,7 @@ tests:
     verifies: [FR-5.9]
     needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_degraded.py::test_degraded_makes_no_display_call
-    result: {status: successful, commit: 79f2e9b, firmware: lcdfault 047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-degraded.junit.xml (fault builds lcdfault-init / lcdfault-write5 of CI run 39897942707)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: lcdfault 0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + lcdfault-init-window.log / lcdfault-write5-window.log"}
 
   - id: TC-HELLO-17
     title: "No reset for 60 s after an init or a write failure"
@@ -689,7 +689,7 @@ tests:
     verifies: [FR-5.10]
     needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_degraded.py::test_no_reset_for_a_minute_after_the_failure
-    result: {status: successful, commit: 79f2e9b, firmware: lcdfault 047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-degraded.junit.xml (fault builds lcdfault-init / lcdfault-write5 of CI run 39897942707)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: lcdfault 0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + lcdfault-init-window.log / lcdfault-write5-window.log"}
 
   - id: TC-LOG-10
     title: "lcd init failed: ESP_ERR_TIMEOUT at level E, once"
@@ -701,7 +701,7 @@ tests:
     verifies: [FR-7.2]
     needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_degraded.py::test_init_failure_line_is_error_level_with_the_error_name
-    result: {status: successful, commit: 79f2e9b, firmware: lcdfault 047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-degraded.junit.xml (fault builds lcdfault-init / lcdfault-write5 of CI run 39897942707)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: lcdfault 0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + lcdfault-init-window.log / lcdfault-write5-window.log"}
 
   - id: TC-LOG-11
     title: "lcd write failed: ESP_ERR_INVALID_STATE at level E, once"
@@ -713,4 +713,4 @@ tests:
     verifies: [FR-7.4]
     needs: [seam-lcd-fault-injection, bench-jtag-reset, bench-serial-monitor, dut-tdisplay-s3-slot4]
     impl: tests/bench/test_degraded.py::test_write_failure_line_is_error_level_with_the_error_name
-    result: {status: successful, commit: 79f2e9b, firmware: lcdfault 047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-degraded.junit.xml (fault builds lcdfault-init / lcdfault-write5 of CI run 39897942707)"}
+    result: {status: successful, commit: 0ea1a0f, firmware: lcdfault 0ea1a0f, date: 2026-10-23, evidence: "testing/evidence/runs/final-0ea1a0f/bench.junit.xml + lcdfault-init-window.log / lcdfault-write5-window.log"}
