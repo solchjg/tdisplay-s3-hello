@@ -351,7 +351,7 @@ tests:
     result: {status: successful, commit: 79f2e9b, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-auto.junit.xml"}
 
   - id: TC-SEC-03
-    title: DUT runs no WiFi AP (scan by BSSID)
+    title: "DUT advertises no default-SSID SoftAP (ESP_ + MAC tail)"
     shape: atomic
     kind: security
     wave: 1
@@ -361,7 +361,7 @@ tests:
     needs: [bench-wifi-scan, dut-tdisplay-s3-slot4]
     # FSD 0.1.2: SSID match, because the scan has no BSSID (#50); R-6 says what it cannot see.
     impl: tests/bench/test_board.py::test_dut_runs_no_default_softap
-    result: {status: not done, reason: "needs bench-wifi-scan-bssid (available: no)", commit: null}
+    result: {status: successful, commit: c2985ae, firmware: 0.0.0-047cd14, date: 2026-10-23, evidence: "testing/evidence/runs/bench-fw047cd14-board.junit.xml"}
 
   - id: TC-LOG-01
     title: "Up-line format core: up=0, up=4294967295"
