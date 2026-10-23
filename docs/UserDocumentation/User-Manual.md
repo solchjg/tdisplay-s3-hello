@@ -4,7 +4,7 @@ How to connect, flash and run the hello-world firmware on a LilyGO T-Display-S3.
 
 **Status: development builds only, no release yet.** Builds from `main` run on
 the board and show the greeting and uptime; they are verified on the testbench
-for the normal case. Display-error handling is built but not yet verified.
+for the normal case and for display errors (by fault injection).
 
 ## Contents
 
