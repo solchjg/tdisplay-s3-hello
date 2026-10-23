@@ -92,7 +92,8 @@ capabilities:
     what: WiFi scan that reports each network's BSSID, so the DUT's MAC can be recognised (FR-9.1 air, WiFi half)
     available: no
     # /api/wifi/scan returns ssid, rssi, auth, channel only (2026-10-23).
-    # Consequence: TC-SEC-03 cannot run; FR-9.1's air check stands on BLE plus
+    # Consequence: TC-SEC-03 matches the default SoftAP SSID instead (FSD 0.1.2,
+    # R-6); FR-9.1's air check otherwise stands on BLE plus
     # the host-tier symbol check. Bench gap: SensorsIot/Embedded-AI-Harness#50.
   seam-lcd-fault-injection:
     what: "Test build whose LCD interface returns a chosen esp_err_t at init or the k-th draw, logging `lcdfi: call` (FSD §5.5)"
@@ -357,8 +358,9 @@ tests:
     fsd_phase: 1
     tier: bench
     verifies: [FR-9.1]
-    needs: [bench-wifi-scan-bssid, dut-tdisplay-s3-slot4]
-    impl: ""
+    needs: [bench-wifi-scan, dut-tdisplay-s3-slot4]
+    # FSD 0.1.2: SSID match, because the scan has no BSSID (#50); R-6 says what it cannot see.
+    impl: tests/bench/test_board.py::test_dut_runs_no_default_softap
     result: {status: not done, reason: "needs bench-wifi-scan-bssid (available: no)", commit: null}
 
   - id: TC-LOG-01

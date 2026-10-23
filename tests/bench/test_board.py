@@ -23,3 +23,18 @@ def test_dut_does_not_advertise_on_ble(bench, dut, flashed):
     seen = [d for d in bench.ble_scan(timeout=int(os.environ.get("BLE_SCAN_S", "8")))
             if (d.get("address") or "").lower() in macs]
     assert not seen, f"DUT advertising on BLE: {seen}"
+
+
+def _default_softap_ssids():
+    """SSIDs a default-configured ESP32 SoftAP would advertise: ESP_ + the last
+    three bytes of its MAC in upper-case hex (FSD FR-9.1 air, WiFi half)."""
+    return {"ESP_" + m.replace(":", "")[-6:].upper() for m in _dut_macs()}
+
+
+# TC-SEC-03 · FR-9.1 (air, WiFi half; FSD 0.1.2, R-6)
+def test_dut_runs_no_default_softap(bench, dut, flashed):
+    ssids = _default_softap_ssids()
+    nets = bench.scan().get("networks", [])
+    assert nets, "WiFi scan saw no networks at all (positive control: the bench radio is listening)"
+    seen = [n for n in nets if (n.get("ssid") or "").upper() in ssids]
+    assert not seen, f"DUT default SoftAP on air: {seen}"
